@@ -34,6 +34,9 @@ camera.position.set( 0, 30, 150 );
 //set controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.listenToKeyEvents(window);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.screenSpacePanning = false;
 controls.keys = {
     LEFT: 'ArrowLeft', //left arrow
     UP: 'ArrowUp', // up arrow
