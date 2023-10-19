@@ -3,6 +3,8 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {GUI} from "three/addons/libs/lil-gui.module.min";
 import {loadObject} from "./helper/loader";
+import {Sky} from "three/addons/objects/Sky";
+import {Water} from "three/addons/objects/Water";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const canvas = document.querySelector( '#c' );
@@ -39,32 +41,70 @@ controls.keys = {
     BOTTOM: 'ArrowDown' // down arrow
 }
 
+function SceneManager(canvas) {
+    // Magic goes here
+}
+
+
+
+
+function buildSky() {
+    const sky = new Sky();
+    sky.scale.setScalar(10000);
+    scene.add(sky);
+    return sky;
+}
+let sky= buildSky();
+function buildSun() {
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    const sun = new THREE.Vector3();
+
+    // Defining the x, y and z value for our 3D Vector
+    const theta = Math.PI * (0.49 - 0.5);
+    const phi = 2 * Math.PI * (0.205 - 0.5);
+    sun.x = Math.cos(phi);
+    sun.y = Math.sin(phi) * Math.sin(theta);
+    sun.z = Math.sin(phi) * Math.cos(theta);
+
+    sky.material.uniforms['sunPosition'].value.copy(sun);
+    scene.environment = pmremGenerator.fromScene(sky).texture;
+    return sun;
+}
+let sun=buildSun()
+function buildWater() {
+    const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
+    const water = new Water(
+        waterGeometry,
+        {
+            textureWidth: 512,
+            textureHeight: 512,
+            waterNormals: new THREE.TextureLoader().load('', function ( texture ) {
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            }),
+            alpha: 1.0,
+            sunDirection: new THREE.Vector3(),
+            sunColor: 0xffffff,
+            waterColor: 0x001e0f,
+            distortionScale: 3.7,
+            fog: scene.fog !== undefined
+        }
+    );
+    water.rotation.x =- Math.PI / 2;
+    scene.add(water);
+
+    const waterUniforms = water.material.uniforms;
+    return water;
+}
+let water=buildWater();
 //set checker plane
 const planeSize = 400;
 
-const picloader = new THREE.TextureLoader();
-const texture = picloader.load('./public/checker.png');
-texture.wrapS = THREE.RepeatWrapping;
-texture.wrapT = THREE.RepeatWrapping;
-texture.magFilter = THREE.NearestFilter;
-texture.colorSpace = THREE.SRGBColorSpace;
-const repeats = planeSize / 2;
-texture.repeat.set(repeats, repeats);
-
-const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
-const planeMat = new THREE.MeshPhongMaterial({
-    map: texture,
-    side: THREE.DoubleSide,
-});
-const mesh = new THREE.Mesh(planeGeo, planeMat);
-mesh.rotation.x = Math.PI * -.5;
-scene.add(mesh);
 
 
 let statue=loadObject('./public/statue_of_liberty.glb', scene, loader,1,1,1,
     0,0,0,0,0,0);
 
-const geometry = new THREE.BoxGeometry( 100, 15, 100 );
+const geometry = new THREE.BoxGeometry( 30, 15, 30 );
 const material = new THREE.MeshBasicMaterial( { color: 0x504030 } );
 const cube = new THREE.Mesh( geometry, material );
 scene.add( cube );
@@ -97,10 +137,14 @@ gui.add( dirlight.target.position, 'y', 0, 10, .01 );
 gui.addColor(new ColorGUIHelper(amlight, 'color'), 'value').name('color');
 gui.add(amlight, 'intensity', 0, 2, 0.01);
 
+
+
 //animate
 function animate() {
     requestAnimationFrame( animate );
     //scene.rotation.y+=0.01;
+
+    water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     controls.update();
     renderer.render( scene, camera );
 }
