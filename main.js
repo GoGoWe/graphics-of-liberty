@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {GUI} from "three/addons/libs/lil-gui.module.min";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
@@ -27,6 +28,15 @@ const far = 100;
 const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
 camera.position.set( 0, 0.3, 8 );
 
+//set controls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.listenToKeyEvents(window);
+controls.keys = {
+    LEFT: 'ArrowLeft', //left arrow
+    UP: 'ArrowUp', // up arrow
+    RIGHT: 'ArrowRight', // right arrow
+    BOTTOM: 'ArrowDown' // down arrow
+}
 
 //set checker plane
 const planeSize = 40;
@@ -122,7 +132,8 @@ gui.add( dirlight.target.position, 'y', 0, 10, .01 );
 //animate
 function animate() {
     requestAnimationFrame( animate );
-    scene.rotation.y+=0.01;
+    //scene.rotation.y+=0.01;
+    controls.update();
     renderer.render( scene, camera );
 }
 
