@@ -51,7 +51,8 @@ mesh.rotation.x = Math.PI * -.5;
 scene.add(mesh);
 
 
-let statue=loadObject('./public/statue_of_liberty.glb', scene, loader,1,1,1);
+let statue=loadObject('./public/statue_of_liberty.glb', scene, loader,1,1,1,
+    0,0,0,0,0,0);
 
 const geometry = new THREE.BoxGeometry( 100, 15, 100 );
 const material = new THREE.MeshBasicMaterial( { color: 0x504030 } );
