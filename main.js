@@ -12,7 +12,10 @@ const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const canvas = document.querySelector( '#c' );
 const renderer = new THREE.WebGLRenderer();
+renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.5;
 document.body.appendChild( renderer.domElement );
 
 
@@ -81,7 +84,7 @@ water = new Water(
     {
         textureWidth: 512,
         textureHeight: 512,
-        waterNormals: new THREE.TextureLoader().load( 'textures/waternormals.jpg', function ( texture ) {
+        waterNormals: new THREE.TextureLoader().load( 'public/waternormals.jpg', function ( texture ) {
 
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
 
