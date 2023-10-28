@@ -177,7 +177,7 @@ const waterUniforms = water.material.uniforms;
 
 const folderWater = gui.addFolder( 'Water' );
 folderWater.add( waterUniforms.distortionScale, 'value', 0, 8, 0.1 ).name( 'distortionScale' );
-folderWater.add( waterUniforms.size, 'value', 0.1, 10, 0.1 ).name( 'size' );
+folderWater.add( waterUniforms.size, 'value', 5, 30, 0.1 ).name( 'size' );
 folderWater.open();
 
 
