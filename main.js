@@ -140,7 +140,13 @@ gui.add( dirlight.target.position, 'y', 0, 10, .01 );
 gui.addColor(new ColorGUIHelper(amlight, 'color'), 'value').name('color');
 gui.add(amlight, 'intensity', 0, 2, 0.01);
 
-
+document.addEventListener("keydown", function(event) {
+    if (event.key === "1") {
+        camera.position.set( 0, 100, 150 );
+        controls.target.set(0,40,0);
+        controls.update();
+    }
+});
 
 //animate
 function animate() {
