@@ -5,6 +5,7 @@ import {GUI} from "three/addons/libs/lil-gui.module.min";
 import {loadObject} from "./helper/loader";
 import {Sky} from "three/addons/objects/Sky";
 import {Water} from "three/addons/objects/Water";
+import {Euler} from "three";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const canvas = document.querySelector( '#c' );
@@ -23,26 +24,6 @@ class ColorGUIHelper {
         this.object[this.prop].set(hexString);
     }
 }
-//set camera angle
-const fov = 40;
-const aspect = 2; // the canvas default
-const near = 0.1;
-const far = 1000;
-const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
-camera.position.set( 0, 30, 150 );
-
-//set controls
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.listenToKeyEvents(window);
-controls.enableDamping = true;
-controls.dampingFactor = 0.05;
-controls.screenSpacePanning = false;
-controls.keys = {
-    LEFT: 'ArrowLeft', //left arrow
-    UP: 'ArrowUp', // up arrow
-    RIGHT: 'ArrowRight', // right arrow
-    BOTTOM: 'ArrowDown' // down arrow
-}
 
 function SceneManager(canvas) {
     // Magic goes here
@@ -53,6 +34,7 @@ function SceneManager(canvas) {
 
 function buildSky() {
     const sky = new Sky();
+
     sky.scale.setScalar(10000);
     scene.add(sky);
     return sky;
@@ -79,8 +61,8 @@ function buildWater() {
     const water = new Water(
         waterGeometry,
         {
-            textureWidth: 512,
-            textureHeight: 512,
+            textureWidth: 1024,
+            textureHeight: 1024,
             waterNormals: new THREE.TextureLoader().load('', function ( texture ) {
                 texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
             }),
@@ -105,7 +87,7 @@ const planeSize = 400;
 
 
 let statue=loadObject('./public/statue_of_liberty.glb', scene, loader,1,1,1,
-    0,0,0,0,0,0);
+    0,0,0,0,-Math.PI/2,0);
 
 const geometry = new THREE.BoxGeometry( 30, 15, 30 );
 const material = new THREE.MeshBasicMaterial( { color: 0x504030 } );
@@ -140,6 +122,33 @@ gui.add( dirlight.target.position, 'y', 0, 10, .01 );
 gui.addColor(new ColorGUIHelper(amlight, 'color'), 'value').name('color');
 gui.add(amlight, 'intensity', 0, 2, 0.01);
 
+
+//set camera angle
+const fov = 40;
+const aspect = 2; // the canvas default
+const near = 0.1;
+const far = 1000;
+const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
+camera.position.set( 0, 50, 150 );
+
+
+
+
+//set controls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0,40,0);
+controls.listenToKeyEvents(window);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.screenSpacePanning = false;
+controls.keys = {
+    LEFT: 'ArrowLeft', //left arrow
+    UP: 'ArrowUp', // up arrow
+    RIGHT: 'ArrowRight', // right arrow
+    BOTTOM: 'ArrowDown' // down arrow
+}
+
+
 document.addEventListener("keydown", function(event) {
     if (event.key === "1") {
         camera.position.set( 0, 100, 150 );
@@ -147,6 +156,7 @@ document.addEventListener("keydown", function(event) {
         controls.update();
     }
 });
+
 
 //animate
 function animate() {
