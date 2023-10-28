@@ -107,12 +107,11 @@ const planeSize = 400;
 let statue=loadObject('./public/statue_of_liberty.glb', scene, loader,1,1,1,
     0,0,0,0,0,0);
 
-const geometry = new THREE.BoxGeometry( 30, 15, 30 );
-const material = new THREE.MeshBasicMaterial( { color: 0x504030 } );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
+let sailboat=loadObject('./public/sailingboat.glb',scene,loader,1,1,1,50,
+    1,0,0,Math.PI/3,0)
 
-
+let cargoship=loadObject('./public/boat_chris.glb',scene,loader,1,1,1,50,
+    1,50,0,Math.PI/3,0)
 
 //Directional Light
 const dircolor = 0xFFFFFF;
