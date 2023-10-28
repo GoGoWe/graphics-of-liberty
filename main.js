@@ -60,7 +60,7 @@ skyUniforms[ 'mieDirectionalG' ].value = 0.8;
 
 const parameters = {
     elevation: 2,
-    azimuth: 180
+    azimuth: -130
 };
 
 const pmremGenerator = new THREE.PMREMGenerator( renderer );
@@ -204,7 +204,7 @@ controls.keys = {
     BOTTOM: 'ArrowDown' // down arrow
 }
 
-
+controls.update()
 document.addEventListener("keydown", function(event) {
     if (event.key === "1") {
         camera.position.set( 0, 80, 150 );
@@ -223,6 +223,7 @@ function onWindowResize() {
 }
 function render() {
 
+    const time = performance.now() * 0.001;
 
 
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
