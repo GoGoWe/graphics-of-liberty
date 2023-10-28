@@ -168,7 +168,9 @@ folderSky.open();
 const waterUniforms = water.material.uniforms;
 
 const folderWater = gui.addFolder( 'Water' );
+waterUniforms.distortionScale.value=5;
 folderWater.add( waterUniforms.distortionScale, 'value', 0, 8, 0.1 ).name( 'distortionScale' );
+waterUniforms.size.value=20;
 folderWater.add( waterUniforms.size, 'value', 5, 30, 0.1 ).name( 'size' );
 folderWater.open();
 
@@ -221,6 +223,9 @@ audioLoader.load( 'sounds/seagulls.mp3', function( buffer ) {
     sound.setVolume( 0.5 );
     sound.play();
 });
+
+
+window.addEventListener( 'resize', onWindowResize );
 
 function onWindowResize() {
 
