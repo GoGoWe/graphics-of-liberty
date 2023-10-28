@@ -6,12 +6,22 @@ import {loadObject} from "./helper/loader";
 import {Sky} from "three/addons/objects/Sky";
 import {Water} from "three/addons/objects/Water";
 import {Euler} from "three";
+import Stats from "three/addons/libs/stats.module";
+import {TubePainter as starts} from "three/addons/misc/TubePainter";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const canvas = document.querySelector( '#c' );
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
+
+
+
+
+
+
+
+
 class ColorGUIHelper {
     constructor(object, prop) {
         this.object = object;
@@ -32,57 +42,89 @@ function SceneManager(canvas) {
 
 
 
-function buildSky() {
-    const sky = new Sky();
+//Sky
 
-    sky.scale.setScalar(10000);
-    scene.add(sky);
-    return sky;
+let sun = new THREE.Vector3();
+
+
+const sky = new Sky();
+sky.scale.setScalar( 10000 );
+scene.add( sky );
+
+const skyUniforms = sky.material.uniforms;
+
+skyUniforms[ 'turbidity' ].value = 10;
+skyUniforms[ 'rayleigh' ].value = 2;
+skyUniforms[ 'mieCoefficient' ].value = 0.005;
+skyUniforms[ 'mieDirectionalG' ].value = 0.8;
+
+const parameters = {
+    elevation: 2,
+    azimuth: -130
+};
+
+const pmremGenerator = new THREE.PMREMGenerator( renderer );
+const sceneEnv = new THREE.Scene();
+
+let renderTarget;
+
+
+let water, container;
+container = document.getElementById( 'container' );
+
+//Water
+
+const waterGeometry = new THREE.PlaneGeometry( 10000, 10000 );
+
+water = new Water(
+    waterGeometry,
+    {
+        textureWidth: 512,
+        textureHeight: 512,
+        waterNormals: new THREE.TextureLoader().load( 'textures/waternormals.jpg', function ( texture ) {
+
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+        } ),
+        sunDirection: new THREE.Vector3(),
+        sunColor: 0xffffff,
+        waterColor: 0x001e0f,
+        distortionScale: 0,
+        fog: scene.fog !== undefined
+    }
+);
+
+water.rotation.x = - Math.PI / 2;
+
+scene.add( water );
+
+function updateSun() {
+
+    const phi = THREE.MathUtils.degToRad( 90 - parameters.elevation );
+    const theta = THREE.MathUtils.degToRad( parameters.azimuth );
+
+    sun.setFromSphericalCoords( 1, phi, theta );
+
+    sky.material.uniforms[ 'sunPosition' ].value.copy( sun );
+    water.material.uniforms[ 'sunDirection' ].value.copy( sun ).normalize();
+
+    if ( renderTarget !== undefined ) renderTarget.dispose();
+
+    sceneEnv.add( sky );
+    renderTarget = pmremGenerator.fromScene( sceneEnv );
+    scene.add( sky );
+
+    scene.environment = renderTarget.texture;
+
 }
-let sky= buildSky();
-function buildSun() {
-    const pmremGenerator = new THREE.PMREMGenerator(renderer);
-    const sun = new THREE.Vector3();
 
-    // Defining the x, y and z value for our 3D Vector
-    const theta = Math.PI * (0.49 - 0.5);
-    const phi = 2 * Math.PI * (0.205 - 0.5);
-    sun.x = Math.cos(phi);
-    sun.y = Math.sin(phi) * Math.sin(theta);
-    sun.z = Math.sin(phi) * Math.cos(theta);
+updateSun();
 
-    sky.material.uniforms['sunPosition'].value.copy(sun);
-    scene.environment = pmremGenerator.fromScene(sky).texture;
-    return sun;
-}
-let sun=buildSun()
-function buildWater() {
-    const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
-    const water = new Water(
-        waterGeometry,
-        {
-            textureWidth: 1024,
-            textureHeight: 1024,
-            waterNormals: new THREE.TextureLoader().load('', function ( texture ) {
-                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            }),
-            alpha: 1.0,
-            sunDirection: new THREE.Vector3(),
-            sunColor: 0xffffff,
-            waterColor: 0x001e0f,
-            distortionScale: 3.7,
-            fog: scene.fog !== undefined
-        }
-    );
-    water.rotation.x =- Math.PI / 2;
-    scene.add(water);
 
-    const waterUniforms = water.material.uniforms;
-    return water;
-}
-let water=buildWater();
-//set checker plane
-const planeSize = 400;
+
+
+
+
 
 
 
@@ -122,13 +164,27 @@ gui.addColor(new ColorGUIHelper(amlight, 'color'), 'value').name('color');
 gui.add(amlight, 'intensity', 0, 2, 0.01);
 
 
+const folderSky = gui.addFolder( 'Sky' );
+folderSky.add( parameters, 'elevation', 0, 90, 0.1 ).onChange( updateSun );
+folderSky.add( parameters, 'azimuth', - 180, 180, 0.1 ).onChange( updateSun );
+folderSky.open();
+
+const waterUniforms = water.material.uniforms;
+
+const folderWater = gui.addFolder( 'Water' );
+folderWater.add( waterUniforms.distortionScale, 'value', 0, 8, 0.1 ).name( 'distortionScale' );
+folderWater.add( waterUniforms.size, 'value', 0.1, 10, 0.1 ).name( 'size' );
+folderWater.open();
+
+
+
 //set camera angle
 const fov = 40;
 const aspect = 2; // the canvas default
 const near = 0.1;
 const far = 1000;
 const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
-camera.position.set( 0, 50, 150 );
+camera.position.set( 0, 80, 150 );
 
 
 
@@ -147,24 +203,40 @@ controls.keys = {
     BOTTOM: 'ArrowDown' // down arrow
 }
 
-
+controls.update()
 document.addEventListener("keydown", function(event) {
     if (event.key === "1") {
-        camera.position.set( 0, 100, 150 );
+        camera.position.set( 0, 80, 150 );
         controls.target.set(0,40,0);
         controls.update();
     }
 });
 
+function onWindowResize() {
+
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+function render() {
+
+    const time = performance.now() * 0.001;
+
+
+    water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
+
+    renderer.render( scene, camera );
+
+}
 
 //animate
 function animate() {
     requestAnimationFrame( animate );
+    render();
+    starts.update();
     //scene.rotation.y+=0.01;
-
-    water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
-    controls.update();
-    renderer.render( scene, camera );
 }
 
 animate();
