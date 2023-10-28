@@ -121,13 +121,6 @@ function updateSun() {
 updateSun();
 
 
-
-
-
-
-
-
-
 let statue=loadObject('./public/statue_of_liberty.glb', scene, loader,1,1,1,
     0,0,0,0,-Math.PI/2,0);
 
@@ -135,7 +128,7 @@ let sailboat=loadObject('./public/sailingboat.glb',scene,loader,1,1,1,50,
     1,0,0,Math.PI/3,0)
 
 let cargoship=loadObject('./public/boat_chris.glb',scene,loader,1,1,1,50,
-    1,50,0,Math.PI/3,0)
+    1,-50,0,Math.PI/3,0)
 
 //Directional Light
 const dircolor = 0xFFFFFF;
@@ -196,6 +189,7 @@ controls.listenToKeyEvents(window);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.screenSpacePanning = false;
+controls.maxPolarAngle=Math.PI/2;
 controls.keys = {
     LEFT: 'ArrowLeft', //left arrow
     UP: 'ArrowUp', // up arrow
@@ -210,6 +204,19 @@ document.addEventListener("keydown", function(event) {
         controls.target.set(0,40,0);
         controls.update();
     }
+});
+
+const listener = new THREE.AudioListener();
+camera.add( listener );
+
+const sound = new THREE.Audio( listener );
+
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( 'sounds/seagulls.mp3', function( buffer ) {
+    sound.setBuffer( buffer );
+    sound.setLoop( true );
+    sound.setVolume( 0.5 );
+    sound.play();
 });
 
 function onWindowResize() {
