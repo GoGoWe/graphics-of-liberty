@@ -7,6 +7,7 @@ import {Sky} from "three/addons/objects/Sky";
 import {Water} from "three/addons/objects/Water";
 import {createStats, initStats, renderStats} from "./helper/stats"
 import {sin} from "three/nodes";
+import {rotate} from "./helper/animator";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const canvas = document.querySelector( '#c' );
