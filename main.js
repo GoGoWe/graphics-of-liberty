@@ -7,6 +7,7 @@ import {Sky} from "three/addons/objects/Sky";
 import {Water} from "three/addons/objects/Water";
 import {createStats, initStats, renderStats} from "./helper/stats"
 import {sin} from "three/nodes";
+import {rotate} from "./helper/animator";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const canvas = document.querySelector( '#c' );
@@ -30,9 +31,6 @@ class ColorGUIHelper {
     }
 }
 
-function SceneManager(canvas) {
-    // Magic goes here
-}
 
 //Sky
 
@@ -146,6 +144,7 @@ const amintensity = 1;
 const amlight = new THREE.AmbientLight( dircolor, dirintensity );
 scene.add( amlight );
 
+
 // generate parametersetter
 const gui = new GUI();
 gui.addColor(new ColorGUIHelper(dirlight, 'color'), 'value').name('color');
@@ -156,6 +155,7 @@ gui.add( dirlight.target.position, 'y', 0, 10, .01 );
 
 gui.addColor(new ColorGUIHelper(amlight, 'color'), 'value').name('color');
 gui.add(amlight, 'intensity', 0, 2, 0.01);
+
 
 const folderSky = gui.addFolder( 'Sky' );
 renderer.toneMappingExposure=0.5;
@@ -176,6 +176,8 @@ waterUniforms.size.value=20;
 folderWater.add( waterUniforms.size, 'value', 5, 30, 0.1 ).name( 'size' );
 folderWater.open();
 
+
+
 //set camera angle
 const fov = 40;
 const aspect = 2; // the canvas default
@@ -184,10 +186,12 @@ const far = 5000;
 const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
 camera.position.set( 0, 80, 150 );
 
+
+
+
 //set controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0,40,0);
-controls.update()
 controls.listenToKeyEvents(window);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
@@ -200,6 +204,7 @@ controls.keys = {
     BOTTOM: 'ArrowDown' // down arrow
 }
 
+controls.update()
 document.addEventListener("keydown", function(event) {
     if (event.key === "1") {
         camera.position.set( 0, 80, 150 );
@@ -238,12 +243,13 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 
 }
+
+let renderZaehler=0;
 function render() {
-    const time = performance.now() * 0.01;
-    if(sailboat!==null) {
-        sailboat.rotation.y += 0.01;
-        sailboat.position.x = sailboat.position.x+Math.sin(time/3)*1
-    }
+    renderZaehler+=1;
+    const time = performance.now()/100000 ;
+    rotate(sailboat, renderZaehler,0.1,Math.PI/2);
+    rotate(cargoship,renderZaehler,1, Math.PI);
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     renderStats()
     renderer.render( scene, camera );
@@ -259,3 +265,6 @@ function animate() {
 }
 
 animate();
+
+
+
