@@ -6,7 +6,7 @@ import {loadObject} from "./helper/loader";
 import {Sky} from "three/addons/objects/Sky";
 import {Water} from "three/addons/objects/Water";
 import {createStats, initStats, renderStats} from "./helper/stats"
-import {sin} from "three/nodes";
+import {rotate} from "./helper/animator";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const canvas = document.querySelector( '#c' );
@@ -16,13 +16,6 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.5;
 document.body.appendChild( renderer.domElement );
-
-
-
-
-
-
-
 
 class ColorGUIHelper {
     constructor(object, prop) {
@@ -36,12 +29,6 @@ class ColorGUIHelper {
         this.object[this.prop].set(hexString);
     }
 }
-
-function SceneManager(canvas) {
-    // Magic goes here
-}
-
-
 
 
 //Sky
@@ -78,7 +65,7 @@ function skyParamChanged(){
 const pmremGenerator = new THREE.PMREMGenerator( renderer );
 const sceneEnv = new THREE.Scene();
 
-let renderTarget;
+
 
 
 let water, container;
@@ -110,8 +97,9 @@ water.rotation.x = - Math.PI / 2;
 
 scene.add( water );
 
-function updateSun() {
 
+function updateSun() {
+    let renderTarget;
     const phi = THREE.MathUtils.degToRad( 90 - parameters.elevation );
     const theta = THREE.MathUtils.degToRad( parameters.azimuth );
 
@@ -129,18 +117,20 @@ function updateSun() {
     scene.environment = renderTarget.texture;
 
 }
-
-updateSun();
+updateSun(parameters,scene,sceneEnv,sun,sky,water,pmremGenerator);
 
 
 
 let statue=null;
 let sailboat=null;
 let cargoship=null;
+loadObject('./public/sailingboat.glb',scene,loader,1,1,1,50,
+    1,0,0,Math.PI/3,0).then(r=>{sailboat=r; sailboat.orientationY+=Math.PI/2});
+
+
 loadObject('./public/statue_of_liberty.glb', scene, loader, 1, 1, 1,
     0, 0, 0, 0, -Math.PI / 2, 0).then(r => {statue=r;});
-loadObject('./public/sailingboat.glb',scene,loader,1,1,1,50,
-    1,0,0,Math.PI/3,0).then(r=>{sailboat=r;});
+
 loadObject('./public/boat_chris.glb',scene,loader,1,1,1,50,
     1,-50,0,Math.PI/3,0).then(r=>{cargoship=r;})
 
@@ -173,8 +163,8 @@ gui.add(amlight, 'intensity', 0, 2, 0.01);
 
 const folderSky = gui.addFolder( 'Sky' );
 renderer.toneMappingExposure=0.5;
-folderSky.add( parameters, 'elevation', 0, 90, 0.1 ).onChange( updateSun );
-folderSky.add( parameters, 'azimuth', - 180, 180, 0.1 ).onChange( updateSun );
+folderSky.add( parameters, 'elevation', 0, 90, 0.1 ).onChange( skyParamChanged );
+folderSky.add( parameters, 'azimuth', - 180, 180, 0.1 ).onChange( skyParamChanged );
 folderSky.add( parameters, 'exposure', 0, 1, 0.0001 ).onChange( skyParamChanged );
 folderSky.add( parameters, 'rayleigh', 0.0, 4, 0.001 ).onChange( skyParamChanged );
 folderSky.add( parameters, 'mieDirectionalG', 0.0, 1, 0.001 ).onChange( skyParamChanged );
@@ -257,12 +247,13 @@ function onWindowResize() {
     renderer.setSize( window.innerWidth, window.innerHeight );
 
 }
+
+let renderZaehler=0;
 function render() {
-    const time = performance.now() * 0.01;
-    if(sailboat!==null) {
-        sailboat.rotation.y += 0.01;
-        sailboat.position.x = sailboat.position.x+Math.sin(time/3)*1
-    }
+    renderZaehler+=1;
+    const time = performance.now()/100000 ;
+    rotate(sailboat, renderZaehler,0.1,Math.PI/2);
+    rotate(cargoship,renderZaehler,1, Math.PI);
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     renderStats()
     renderer.render( scene, camera );
