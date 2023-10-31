@@ -4,7 +4,6 @@ import * as THREE from "three";
 export function loadObject(path, scene, loader,scalex,scaley,scalez,posx,posy,posz,rotx,roty,rotz){
     let obj
     loader.load( path, obj=function ( gltf ) {
-        console.log(gltf);
         const object =gltf.scene;
         object.material= new THREE.MeshBasicMaterial( { color: 0x505050 } );
         scene.add(object);

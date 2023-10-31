@@ -18,13 +18,6 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.5;
 document.body.appendChild( renderer.domElement );
 
-
-
-
-
-
-
-
 class ColorGUIHelper {
     constructor(object, prop) {
         this.object = object;
@@ -42,14 +35,9 @@ function SceneManager(canvas) {
     // Magic goes here
 }
 
-
-
-
 //Sky
 
 let sun = new THREE.Vector3();
-
-
 const sky = new Sky();
 sky.scale.setScalar( 10000 );
 scene.add( sky );
@@ -123,7 +111,6 @@ function updateSun() {
 
 updateSun();
 
-
 let statue=loadObject('./public/statue_of_liberty.glb', scene, loader,1,1,1,
     0,0,0,0,-Math.PI/2,0);
 
@@ -147,7 +134,6 @@ const amintensity = 1;
 const amlight = new THREE.AmbientLight( dircolor, dirintensity );
 scene.add( amlight );
 
-
 // generate parametersetter
 const gui = new GUI();
 gui.addColor(new ColorGUIHelper(dirlight, 'color'), 'value').name('color');
@@ -158,7 +144,6 @@ gui.add( dirlight.target.position, 'y', 0, 10, .01 );
 
 gui.addColor(new ColorGUIHelper(amlight, 'color'), 'value').name('color');
 gui.add(amlight, 'intensity', 0, 2, 0.01);
-
 
 const folderSky = gui.addFolder( 'Sky' );
 folderSky.add( parameters, 'elevation', 0, 90, 0.1 ).onChange( updateSun );
@@ -172,8 +157,6 @@ folderWater.add( waterUniforms.distortionScale, 'value', 0, 8, 0.1 ).name( 'dist
 folderWater.add( waterUniforms.size, 'value', 0.1, 10, 0.1 ).name( 'size' );
 folderWater.open();
 
-
-
 //set camera angle
 const fov = 40;
 const aspect = 2; // the canvas default
@@ -182,12 +165,10 @@ const far = 1000;
 const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
 camera.position.set( 0, 80, 150 );
 
-
-
-
 //set controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0,40,0);
+controls.update()
 controls.listenToKeyEvents(window);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
@@ -200,7 +181,6 @@ controls.keys = {
     BOTTOM: 'ArrowDown' // down arrow
 }
 
-controls.update()
 document.addEventListener("keydown", function(event) {
     if (event.key === "1") {
         camera.position.set( 0, 80, 150 );
@@ -222,6 +202,17 @@ audioLoader.load( 'sounds/seagulls.mp3', function( buffer ) {
     sound.play();
 });
 
+/*document.addEventListener("keydown", function(event) {
+    if (event.key === "2") {
+        audioLoader.load( 'sounds/newyork.mp3', function( buffer ) {
+            sound.setBuffer( buffer );
+            sound.setLoop( true );
+            sound.setVolume( 0.5 );
+            sound.play();
+        });
+    }
+});*/
+
 function onWindowResize() {
 
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -234,7 +225,6 @@ function render() {
 
     const time = performance.now() * 0.001;
 
-
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
 
     renderer.render( scene, camera );
@@ -243,13 +233,10 @@ function render() {
 
 //animate
 function animate() {
+    controls.update();
     requestAnimationFrame( animate );
     render();
     starts.update();
-    //scene.rotation.y+=0.01;
 }
 
 animate();
-
-
-
