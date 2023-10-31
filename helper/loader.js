@@ -2,8 +2,7 @@ import * as THREE from "three";
 
 /** places object from path in scene*/
 export function loadObject(path, scene, loader,scalex,scaley,scalez,posx,posy,posz,rotx,roty,rotz){
-    let obj
-    loader.load( path, obj=function ( gltf ) {
+    let obj=loader.load( path, function ( gltf ) {
         console.log(gltf);
         const object =gltf.scene;
         object.material= new THREE.MeshBasicMaterial( { color: 0x505050 } );
@@ -18,5 +17,5 @@ export function loadObject(path, scene, loader,scalex,scaley,scalez,posx,posy,po
         console.error( error );
 
     } );//*/
-    return obj
+    return obj;
 }
