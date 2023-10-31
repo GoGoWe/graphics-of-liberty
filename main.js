@@ -1,12 +1,9 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import {GUI} from "three/addons/libs/lil-gui.module.min";
 import {loadObject} from "./helper/loader";
-import {Sky} from "three/addons/objects/Sky";
 import {Water} from "three/addons/objects/Water";
 import {createStats, initStats, renderStats} from "./helper/stats"
-import {sin} from "three/nodes";
 import {rotate} from "./helper/animator";
 import {initEnvironment} from "./helper/environment";
 const scene = new THREE.Scene();
@@ -22,56 +19,8 @@ document.body.appendChild( renderer.domElement );
 
 
 
-//Sky
 
 
-const sky = new Sky();
-sky.scale.setScalar( 10000 );
-scene.add( sky );
-
-const skyUniforms = sky.material.uniforms;
-
-skyUniforms[ 'turbidity' ].value = 10;
-skyUniforms[ 'mieCoefficient' ].value = 0.005;
-
-
-
-
-
-
-
-
-let renderTarget;
-
-
-let water, container;
-container = document.getElementById( 'container' );
-
-//Water
-
-const waterGeometry = new THREE.PlaneGeometry( 10000, 10000 );
-
-water = new Water(
-    waterGeometry,
-    {
-        textureWidth: 512,
-        textureHeight: 512,
-        waterNormals: new THREE.TextureLoader().load( 'public/waternormals.jpg', function ( texture ) {
-
-            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-
-        } ),
-        sunDirection: new THREE.Vector3(),
-        sunColor: 0xffffff,
-        waterColor: 0x001e0f,
-        distortionScale: 0,
-        fog: scene.fog !== undefined
-    }
-);
-
-water.rotation.x = - Math.PI / 2;
-
-scene.add( water );
 
 
 
@@ -88,7 +37,7 @@ loadObject('./public/boat_chris.glb',scene,loader,1,1,1,50,
     1,-50,0,Math.PI/3,0).then(r=>{cargoship=r;})
 
 
-initEnvironment(scene,renderer, sky, water);
+let water=initEnvironment(scene,renderer);
 
 
 //set camera angle

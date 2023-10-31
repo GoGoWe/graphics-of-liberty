@@ -1,9 +1,20 @@
 import * as THREE from "three";
 import GUI from "lil-gui";
+import {Sky} from "three/addons/objects/Sky";
+import {initWater} from "./water";
 
 
 
-export function initEnvironment(scene,renderer, sky, water){
+export function initEnvironment(scene,renderer){
+
+let water=initWater(scene);
+//Sky
+
+
+    const sky = new Sky();
+    sky.scale.setScalar( 1000000 );
+    scene.add( sky );
+
     let sun = new THREE.Vector3();
     const sceneEnv = new THREE.Scene();
     const pmremGenerator = new THREE.PMREMGenerator( renderer );
@@ -15,6 +26,13 @@ export function initEnvironment(scene,renderer, sky, water){
         rayleigh: 2,
         mieDirectionalG: 0.975,
     };
+
+    const skyUniforms = sky.material.uniforms;
+
+    skyUniforms[ 'turbidity' ].value = 10;
+    skyUniforms[ 'mieCoefficient' ].value = 0.005;
+
+
     function updateSun() {
 
         const phi = THREE.MathUtils.degToRad( 90 - parameters.elevation );
@@ -106,4 +124,5 @@ export function initEnvironment(scene,renderer, sky, water){
     folderWater.add( waterUniforms.size, 'value', 5, 30, 0.1 ).name( 'size' );
     folderWater.open();
 
+    return water;
 }
