@@ -1,13 +1,12 @@
 import * as THREE from 'three';
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {GUI} from "three/addons/libs/lil-gui.module.min";
 import {loadObject} from "./helper/loader";
 import {Sky} from "three/addons/objects/Sky";
 import {Water} from "three/addons/objects/Water";
-import {Euler} from "three";
-import Stats from "three/addons/libs/stats.module";
-import {TubePainter as starts} from "three/addons/misc/TubePainter";
+import {createStats, initStats, renderStats} from "./helper/stats"
+import {sin} from "three/nodes";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const canvas = document.querySelector( '#c' );
@@ -39,20 +38,30 @@ function SceneManager(canvas) {
 
 let sun = new THREE.Vector3();
 const sky = new Sky();
-sky.scale.setScalar( 10000 );
+sky.scale.setScalar( 10000000 );
 scene.add( sky );
 
 const skyUniforms = sky.material.uniforms;
 
 skyUniforms[ 'turbidity' ].value = 10;
-skyUniforms[ 'rayleigh' ].value = 2;
 skyUniforms[ 'mieCoefficient' ].value = 0.005;
-skyUniforms[ 'mieDirectionalG' ].value = 0.8;
+
+
 
 const parameters = {
     elevation: 2,
-    azimuth: -130
+    azimuth: -130,
+    exposure: renderer.toneMappingExposure,
+    rayleigh: 2,
+    mieDirectionalG: 0.975,
 };
+
+function skyParamChanged(){
+    const uniforms = sky.material.uniforms;
+    renderer.toneMappingExposure = parameters.exposure;
+    uniforms[ 'rayleigh' ].value = parameters.rayleigh;
+    uniforms[ 'mieDirectionalG' ].value = parameters.mieDirectionalG;
+}
 
 const pmremGenerator = new THREE.PMREMGenerator( renderer );
 const sceneEnv = new THREE.Scene();
@@ -111,14 +120,17 @@ function updateSun() {
 
 updateSun();
 
-let statue=loadObject('./public/statue_of_liberty.glb', scene, loader,1,1,1,
-    0,0,0,0,-Math.PI/2,0);
 
-let sailboat=loadObject('./public/sailingboat.glb',scene,loader,1,1,1,50,
-    1,0,0,Math.PI/3,0)
 
-let cargoship=loadObject('./public/boat_chris.glb',scene,loader,1,1,1,50,
-    1,-50,0,Math.PI/3,0)
+let statue=null;
+let sailboat=null;
+let cargoship=null;
+loadObject('./public/statue_of_liberty.glb', scene, loader, 1, 1, 1,
+    0, 0, 0, 0, -Math.PI / 2, 0).then(r => {statue=r;});
+loadObject('./public/sailingboat.glb',scene,loader,1,1,1,50,
+    1,0,0,Math.PI/3,0).then(r=>{sailboat=r;});
+loadObject('./public/boat_chris.glb',scene,loader,1,1,1,50,
+    1,-50,0,Math.PI/3,0).then(r=>{cargoship=r;})
 
 //Directional Light
 const dircolor = 0xFFFFFF;
@@ -146,22 +158,29 @@ gui.addColor(new ColorGUIHelper(amlight, 'color'), 'value').name('color');
 gui.add(amlight, 'intensity', 0, 2, 0.01);
 
 const folderSky = gui.addFolder( 'Sky' );
+renderer.toneMappingExposure=0.5;
 folderSky.add( parameters, 'elevation', 0, 90, 0.1 ).onChange( updateSun );
 folderSky.add( parameters, 'azimuth', - 180, 180, 0.1 ).onChange( updateSun );
+folderSky.add( parameters, 'exposure', 0, 1, 0.0001 ).onChange( skyParamChanged );
+folderSky.add( parameters, 'rayleigh', 0.0, 4, 0.001 ).onChange( skyParamChanged );
+folderSky.add( parameters, 'mieDirectionalG', 0.0, 1, 0.001 ).onChange( skyParamChanged );
 folderSky.open();
+skyParamChanged();
 
 const waterUniforms = water.material.uniforms;
 
 const folderWater = gui.addFolder( 'Water' );
+waterUniforms.distortionScale.value=5;
 folderWater.add( waterUniforms.distortionScale, 'value', 0, 8, 0.1 ).name( 'distortionScale' );
-folderWater.add( waterUniforms.size, 'value', 0.1, 10, 0.1 ).name( 'size' );
+waterUniforms.size.value=20;
+folderWater.add( waterUniforms.size, 'value', 5, 30, 0.1 ).name( 'size' );
 folderWater.open();
 
 //set camera angle
 const fov = 40;
 const aspect = 2; // the canvas default
 const near = 0.1;
-const far = 1000;
+const far = 5000;
 const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
 camera.position.set( 0, 80, 150 );
 
@@ -202,16 +221,14 @@ audioLoader.load( 'sounds/seagulls.mp3', function( buffer ) {
     sound.play();
 });
 
-/*document.addEventListener("keydown", function(event) {
-    if (event.key === "2") {
-        audioLoader.load( 'sounds/newyork.mp3', function( buffer ) {
-            sound.setBuffer( buffer );
-            sound.setLoop( true );
-            sound.setVolume( 0.5 );
-            sound.play();
-        });
-    }
-});*/
+
+
+//stats
+
+createStats(renderer, scene, camera)
+initStats()
+
+window.addEventListener( 'resize', onWindowResize );
 
 function onWindowResize() {
 
@@ -222,21 +239,23 @@ function onWindowResize() {
 
 }
 function render() {
-
-    const time = performance.now() * 0.001;
-
+    const time = performance.now() * 0.01;
+    if(sailboat!==null) {
+        sailboat.rotation.y += 0.01;
+        sailboat.position.x = sailboat.position.x+Math.sin(time/3)*1
+    }
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
-
+    renderStats()
     renderer.render( scene, camera );
 
 }
 
 //animate
 function animate() {
-    controls.update();
+    controls.update()
     requestAnimationFrame( animate );
     render();
-    starts.update();
+
 }
 
 animate();
