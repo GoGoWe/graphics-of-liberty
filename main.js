@@ -6,6 +6,7 @@ import {loadObject} from "./helper/loader";
 import {Sky} from "three/addons/objects/Sky";
 import {Water} from "three/addons/objects/Water";
 import {createStats, initStats, renderStats} from "./helper/stats"
+import {sin} from "three/nodes";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const canvas = document.querySelector( '#c' );
@@ -260,7 +261,7 @@ function render() {
     const time = performance.now() * 0.01;
     if(sailboat!==null) {
         sailboat.rotation.y += 0.01;
-        //sailboat.position.x = sailboat.position.x//+sin(time)*0.000001
+        sailboat.position.x = sailboat.position.x+Math.sin(time/3)*1
     }
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     renderStats()
