@@ -1,12 +1,11 @@
 import * as THREE from 'three';
-import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {GUI} from "three/addons/libs/lil-gui.module.min";
 import {loadObject} from "./helper/loader";
 import {Sky} from "three/addons/objects/Sky";
 import {Water} from "three/addons/objects/Water";
 import {createStats, initStats, renderStats} from "./helper/stats"
-import {TubePainter as starts} from "three/addons/misc/TubePainter";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const canvas = document.querySelector( '#c' );
@@ -133,14 +132,16 @@ function updateSun() {
 updateSun();
 
 
-let statue=loadObject('./public/statue_of_liberty.glb', scene, loader,1,1,1,
-    0,0,0,0,-Math.PI/2,0);
 
-let sailboat=loadObject('./public/sailingboat.glb',scene,loader,1,1,1,50,
-    1,0,0,Math.PI/3,0)
-
-let cargoship=loadObject('./public/boat_chris.glb',scene,loader,1,1,1,50,
-    1,-50,0,Math.PI/3,0)
+let statue=null;
+let sailboat=null;
+let cargoship=null;
+loadObject('./public/statue_of_liberty.glb', scene, loader, 1, 1, 1,
+    0, 0, 0, 0, -Math.PI / 2, 0).then(r => {statue=r;});
+loadObject('./public/sailingboat.glb',scene,loader,1,1,1,50,
+    1,0,0,Math.PI/3,0).then(r=>{sailboat=r;});
+loadObject('./public/boat_chris.glb',scene,loader,1,1,1,50,
+    1,-50,0,Math.PI/3,0).then(r=>{cargoship=r;})
 
 //Directional Light
 const dircolor = 0xFFFFFF;
@@ -256,9 +257,11 @@ function onWindowResize() {
 
 }
 function render() {
-
-
-
+    const time = performance.now() * 0.01;
+    if(sailboat!==null) {
+        sailboat.rotation.y += 0.01;
+        //sailboat.position.x = sailboat.position.x//+sin(time)*0.000001
+    }
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     renderStats()
     renderer.render( scene, camera );
