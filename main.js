@@ -6,7 +6,7 @@ import {loadObject} from "./helper/loader";
 import {Sky} from "three/addons/objects/Sky";
 import {Water} from "three/addons/objects/Water";
 import {createStats, initStats, renderStats} from "./helper/stats"
-import {rotate} from "./helper/animator";
+import {sin} from "three/nodes";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const canvas = document.querySelector( '#c' );
@@ -34,8 +34,6 @@ class ColorGUIHelper {
 //Sky
 
 let sun = new THREE.Vector3();
-
-
 const sky = new Sky();
 sky.scale.setScalar( 10000000 );
 scene.add( sky );
@@ -65,7 +63,7 @@ function skyParamChanged(){
 const pmremGenerator = new THREE.PMREMGenerator( renderer );
 const sceneEnv = new THREE.Scene();
 
-
+let renderTarget;
 
 
 let water, container;
@@ -97,9 +95,8 @@ water.rotation.x = - Math.PI / 2;
 
 scene.add( water );
 
-
 function updateSun() {
-    let renderTarget;
+
     const phi = THREE.MathUtils.degToRad( 90 - parameters.elevation );
     const theta = THREE.MathUtils.degToRad( parameters.azimuth );
 
@@ -117,20 +114,18 @@ function updateSun() {
     scene.environment = renderTarget.texture;
 
 }
-updateSun(parameters,scene,sceneEnv,sun,sky,water,pmremGenerator);
+
+updateSun();
 
 
 
 let statue=null;
 let sailboat=null;
 let cargoship=null;
-loadObject('./public/sailingboat.glb',scene,loader,1,1,1,50,
-    1,0,0,Math.PI/3,0).then(r=>{sailboat=r; sailboat.orientationY+=Math.PI/2});
-
-
 loadObject('./public/statue_of_liberty.glb', scene, loader, 1, 1, 1,
     0, 0, 0, 0, -Math.PI / 2, 0).then(r => {statue=r;});
-
+loadObject('./public/sailingboat.glb',scene,loader,1,1,1,50,
+    1,0,0,Math.PI/3,0).then(r=>{sailboat=r;});
 loadObject('./public/boat_chris.glb',scene,loader,1,1,1,50,
     1,-50,0,Math.PI/3,0).then(r=>{cargoship=r;})
 
@@ -163,8 +158,8 @@ gui.add(amlight, 'intensity', 0, 2, 0.01);
 
 const folderSky = gui.addFolder( 'Sky' );
 renderer.toneMappingExposure=0.5;
-folderSky.add( parameters, 'elevation', 0, 90, 0.1 ).onChange( skyParamChanged );
-folderSky.add( parameters, 'azimuth', - 180, 180, 0.1 ).onChange( skyParamChanged );
+folderSky.add( parameters, 'elevation', 0, 90, 0.1 ).onChange( updateSun );
+folderSky.add( parameters, 'azimuth', - 180, 180, 0.1 ).onChange( updateSun );
 folderSky.add( parameters, 'exposure', 0, 1, 0.0001 ).onChange( skyParamChanged );
 folderSky.add( parameters, 'rayleigh', 0.0, 4, 0.001 ).onChange( skyParamChanged );
 folderSky.add( parameters, 'mieDirectionalG', 0.0, 1, 0.001 ).onChange( skyParamChanged );
