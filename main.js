@@ -17,13 +17,6 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.5;
 document.body.appendChild( renderer.domElement );
 
-
-
-
-
-
-
-
 class ColorGUIHelper {
     constructor(object, prop) {
         this.object = object;
@@ -41,14 +34,9 @@ function SceneManager(canvas) {
     // Magic goes here
 }
 
-
-
-
 //Sky
 
 let sun = new THREE.Vector3();
-
-
 const sky = new Sky();
 sky.scale.setScalar( 10000000 );
 scene.add( sky );
@@ -158,7 +146,6 @@ const amintensity = 1;
 const amlight = new THREE.AmbientLight( dircolor, dirintensity );
 scene.add( amlight );
 
-
 // generate parametersetter
 const gui = new GUI();
 gui.addColor(new ColorGUIHelper(dirlight, 'color'), 'value').name('color');
@@ -169,7 +156,6 @@ gui.add( dirlight.target.position, 'y', 0, 10, .01 );
 
 gui.addColor(new ColorGUIHelper(amlight, 'color'), 'value').name('color');
 gui.add(amlight, 'intensity', 0, 2, 0.01);
-
 
 const folderSky = gui.addFolder( 'Sky' );
 renderer.toneMappingExposure=0.5;
@@ -190,8 +176,6 @@ waterUniforms.size.value=20;
 folderWater.add( waterUniforms.size, 'value', 5, 30, 0.1 ).name( 'size' );
 folderWater.open();
 
-
-
 //set camera angle
 const fov = 40;
 const aspect = 2; // the canvas default
@@ -200,12 +184,10 @@ const far = 5000;
 const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
 camera.position.set( 0, 80, 150 );
 
-
-
-
 //set controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0,40,0);
+controls.update()
 controls.listenToKeyEvents(window);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
@@ -218,7 +200,6 @@ controls.keys = {
     BOTTOM: 'ArrowDown' // down arrow
 }
 
-controls.update()
 document.addEventListener("keydown", function(event) {
     if (event.key === "1") {
         camera.position.set( 0, 80, 150 );
@@ -278,6 +259,3 @@ function animate() {
 }
 
 animate();
-
-
-
