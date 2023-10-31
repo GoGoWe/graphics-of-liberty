@@ -1,8 +1,20 @@
 import * as THREE from "three";
 import GUI from "lil-gui";
-export function initEnvironment(scene,renderer,parameters, sky, sun, water,sceneEnv,pmremGenerator){
 
-let renderTarget;
+
+
+export function initEnvironment(scene,renderer, sky, water){
+    let sun = new THREE.Vector3();
+    const sceneEnv = new THREE.Scene();
+    const pmremGenerator = new THREE.PMREMGenerator( renderer );
+    let renderTarget;
+    const parameters = {
+        elevation: 2,
+        azimuth: -130,
+        exposure: renderer.toneMappingExposure,
+        rayleigh: 2,
+        mieDirectionalG: 0.975,
+    };
     function updateSun() {
 
         const phi = THREE.MathUtils.degToRad( 90 - parameters.elevation );

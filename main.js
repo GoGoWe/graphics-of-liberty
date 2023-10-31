@@ -24,7 +24,7 @@ document.body.appendChild( renderer.domElement );
 
 //Sky
 
-let sun = new THREE.Vector3();
+
 const sky = new Sky();
 sky.scale.setScalar( 10000 );
 scene.add( sky );
@@ -36,18 +36,10 @@ skyUniforms[ 'mieCoefficient' ].value = 0.005;
 
 
 
-const parameters = {
-    elevation: 2,
-    azimuth: -130,
-    exposure: renderer.toneMappingExposure,
-    rayleigh: 2,
-    mieDirectionalG: 0.975,
-};
 
 
 
-const pmremGenerator = new THREE.PMREMGenerator( renderer );
-const sceneEnv = new THREE.Scene();
+
 
 let renderTarget;
 
@@ -96,7 +88,7 @@ loadObject('./public/boat_chris.glb',scene,loader,1,1,1,50,
     1,-50,0,Math.PI/3,0).then(r=>{cargoship=r;})
 
 
-initEnvironment(scene,renderer,parameters, sky, sun, water, sceneEnv,pmremGenerator);
+initEnvironment(scene,renderer, sky, water);
 
 
 //set camera angle
