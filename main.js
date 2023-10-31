@@ -5,8 +5,7 @@ import {GUI} from "three/addons/libs/lil-gui.module.min";
 import {loadObject} from "./helper/loader";
 import {Sky} from "three/addons/objects/Sky";
 import {Water} from "three/addons/objects/Water";
-import {Euler} from "three";
-import Stats from "three/addons/libs/stats.module";
+import {createStats, initStats, renderStats} from "./helper/stats"
 import {TubePainter as starts} from "three/addons/misc/TubePainter";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
@@ -51,20 +50,30 @@ let sun = new THREE.Vector3();
 
 
 const sky = new Sky();
-sky.scale.setScalar( 10000 );
+sky.scale.setScalar( 10000000 );
 scene.add( sky );
 
 const skyUniforms = sky.material.uniforms;
 
 skyUniforms[ 'turbidity' ].value = 10;
-skyUniforms[ 'rayleigh' ].value = 2;
 skyUniforms[ 'mieCoefficient' ].value = 0.005;
-skyUniforms[ 'mieDirectionalG' ].value = 0.8;
+
+
 
 const parameters = {
     elevation: 2,
-    azimuth: -130
+    azimuth: -130,
+    exposure: renderer.toneMappingExposure,
+    rayleigh: 2,
+    mieDirectionalG: 0.975,
 };
+
+function skyParamChanged(){
+    const uniforms = sky.material.uniforms;
+    renderer.toneMappingExposure = parameters.exposure;
+    uniforms[ 'rayleigh' ].value = parameters.rayleigh;
+    uniforms[ 'mieDirectionalG' ].value = parameters.mieDirectionalG;
+}
 
 const pmremGenerator = new THREE.PMREMGenerator( renderer );
 const sceneEnv = new THREE.Scene();
@@ -161,15 +170,22 @@ gui.add(amlight, 'intensity', 0, 2, 0.01);
 
 
 const folderSky = gui.addFolder( 'Sky' );
+renderer.toneMappingExposure=0.5;
 folderSky.add( parameters, 'elevation', 0, 90, 0.1 ).onChange( updateSun );
 folderSky.add( parameters, 'azimuth', - 180, 180, 0.1 ).onChange( updateSun );
+folderSky.add( parameters, 'exposure', 0, 1, 0.0001 ).onChange( skyParamChanged );
+folderSky.add( parameters, 'rayleigh', 0.0, 4, 0.001 ).onChange( skyParamChanged );
+folderSky.add( parameters, 'mieDirectionalG', 0.0, 1, 0.001 ).onChange( skyParamChanged );
 folderSky.open();
+skyParamChanged();
 
 const waterUniforms = water.material.uniforms;
 
 const folderWater = gui.addFolder( 'Water' );
+waterUniforms.distortionScale.value=5;
 folderWater.add( waterUniforms.distortionScale, 'value', 0, 8, 0.1 ).name( 'distortionScale' );
-folderWater.add( waterUniforms.size, 'value', 0.1, 10, 0.1 ).name( 'size' );
+waterUniforms.size.value=20;
+folderWater.add( waterUniforms.size, 'value', 5, 30, 0.1 ).name( 'size' );
 folderWater.open();
 
 
@@ -178,7 +194,7 @@ folderWater.open();
 const fov = 40;
 const aspect = 2; // the canvas default
 const near = 0.1;
-const far = 1000;
+const far = 5000;
 const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
 camera.position.set( 0, 80, 150 );
 
@@ -222,6 +238,15 @@ audioLoader.load( 'sounds/seagulls.mp3', function( buffer ) {
     sound.play();
 });
 
+
+
+//stats
+
+createStats(renderer, scene, camera)
+initStats()
+
+window.addEventListener( 'resize', onWindowResize );
+
 function onWindowResize() {
 
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -232,21 +257,20 @@ function onWindowResize() {
 }
 function render() {
 
-    const time = performance.now() * 0.001;
 
 
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
-
+    renderStats()
     renderer.render( scene, camera );
 
 }
 
 //animate
 function animate() {
+    controls.update()
     requestAnimationFrame( animate );
     render();
-    starts.update();
-    //scene.rotation.y+=0.01;
+
 }
 
 animate();
