@@ -6,11 +6,9 @@ import {initWater} from "./water";
 
 
 export function initEnvironment(scene,renderer){
-
+//Water
 let water=initWater(scene);
 //Sky
-
-
     const sky = new Sky();
     sky.scale.setScalar( 1000000 );
     scene.add( sky );
@@ -89,7 +87,7 @@ let water=initWater(scene);
 
     const amcolor = 0xFFFFFF;
     const amintensity = 1;
-    const amlight = new THREE.AmbientLight( dircolor, dirintensity );
+    const amlight = new THREE.AmbientLight( amcolor, amintensity );
     scene.add( amlight );
 
 
