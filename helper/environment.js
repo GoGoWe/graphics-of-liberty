@@ -6,11 +6,9 @@ import {initWater} from "./water";
 
 
 export function initEnvironment(scene,renderer){
-
+//Water
 let water=initWater(scene);
 //Sky
-
-
     const sky = new Sky();
     sky.scale.setScalar( 1000000 );
     scene.add( sky );
