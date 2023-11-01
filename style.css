@@ -1,6 +1,11 @@
 
 .titlebig{
-   font-size: 500%;
+    position: absolute;
+    left: 25%;
+    top: 15%;
+    width:50%;
+    height:10%;
+    font-size: 500%;
     display: flex;
     align-items: center;
     justify-content: center;

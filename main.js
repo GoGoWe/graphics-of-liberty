@@ -1,18 +1,15 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {loadObject} from "./helper/loader";
-import {Water} from "three/addons/objects/Water";
 import {createStats, initStats, renderStats} from "./helper/stats"
 import {rotate} from "./helper/animator";
 import {initEnvironment} from "./helper/environment";
 import {initCamera} from "./helper/camera";
 import {initControls} from "./helper/controls";
 import {initSound} from "./helper/sound";
-import {func} from "three/addons/nodes/code/FunctionNode";
+
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
-const canvas = document.querySelector( '#c' );
 const renderer = new THREE.WebGLRenderer();
 renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -29,17 +26,24 @@ let statue=null,
 function init(){
 
     loadObject('./public/statue_of_liberty.glb', scene, loader, 1, 1, 1,
-        0, 0, 0, 0, -Math.PI / 2, 0).then(r => {statue=r;});
+        0, 0, 0, 0, -Math.PI / 2, 0).then(r => {
+            statue=r;
+        });
+
     loadObject('./public/sailingboat.glb',scene,loader,1,1,1,50,
-        1,0,0,Math.PI/3,0).then(r=>{sailboat=r;});
+        1,0,0,Math.PI/3,0).then(r=>{
+            sailboat=r;
+        });
     loadObject('./public/boat_chris.glb',scene,loader,1,1,1,50,
-        1,-50,0,Math.PI/3,0).then(r=>{cargoship=r;})
+        1,-50,0,Math.PI/3,0).then(r=>{
+            cargoship=r;
+        });
 
 
     water=initEnvironment(scene,renderer);
 
 
-    camera=initCamera(renderer);
+    camera=initCamera(innerWidth, innerHeight);
     controls=initControls(camera,renderer);
 
     initSound(camera);
