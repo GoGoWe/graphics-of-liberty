@@ -75,6 +75,18 @@ function render() {
 
 }
 
+$(document).ready(function (){
+    var togglebtn = $(".toggle-btn");
+    $(".switch").on("click",function (){
+        togglebtn.toggleClass("active");
+        if(togglebtn.hasClass("active")){
+            console.log("day");
+        } else {
+            console.log("night");
+        }
+    });
+});
+
 //animate
 function animate() {
     controls.update()
