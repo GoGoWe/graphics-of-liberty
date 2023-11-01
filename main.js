@@ -44,7 +44,7 @@ function init(){
     water=initEnvironment(scene,renderer);
 
 
-    camera=initCamera(renderer);
+    camera=initCamera(innerWidth, innerHeight);
     controls=initControls(camera,renderer);
 
     initSound(camera);
