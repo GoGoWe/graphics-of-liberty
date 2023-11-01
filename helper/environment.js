@@ -89,7 +89,7 @@ let water=initWater(scene);
 
     const amcolor = 0xFFFFFF;
     const amintensity = 1;
-    const amlight = new THREE.AmbientLight( dircolor, dirintensity );
+    const amlight = new THREE.AmbientLight( amcolor, amintensity );
     scene.add( amlight );
 
 

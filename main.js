@@ -10,7 +10,6 @@ import {initSound} from "./helper/sound";
 
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
-const canvas = document.querySelector( '#c' );
 const renderer = new THREE.WebGLRenderer();
 renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize( window.innerWidth, window.innerHeight );
