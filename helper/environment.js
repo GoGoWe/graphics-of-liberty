@@ -6,8 +6,12 @@ import {initWater} from "./water";
 
 
 export function initEnvironment(scene,renderer){
+
+    /*let fogcolor=0xffffff;
+    scene.fog = new THREE.FogExp2( fogcolor, 0.001 );*/
+
 //Water
-let water=initWater(scene);
+    let water=initWater(scene);
 //Sky
     const sky = new Sky();
     sky.scale.setScalar( 1000000 );
@@ -37,7 +41,6 @@ let water=initWater(scene);
         const theta = THREE.MathUtils.degToRad( parameters.azimuth );
 
         sun.setFromSphericalCoords( 1, phi, theta );
-
         sky.material.uniforms[ 'sunPosition' ].value.copy( sun );
         water.material.uniforms[ 'sunDirection' ].value.copy( sun ).normalize();
 
