@@ -20,8 +20,8 @@ water = new Water(
         } ),
         sunDirection: new THREE.Vector3(),
         sunColor: 0xffffff,
-        waterColor: 0x001e0f,
-            distortionScale: 0,
+        waterColor: 0x003399,
+        distortionScale: 0,
         fog: scene.fog !== undefined
     }
 );
