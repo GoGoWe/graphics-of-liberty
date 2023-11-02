@@ -14,3 +14,43 @@
     background: rgba(255, 255, 255, 0.0);
     pointer-events: none;
 }
+
+.toggle-btn{
+ position: absolute;
+ width: 75px;
+ height: 30px;
+ padding: 10px;
+ border-radius: 25px;
+ background-color: aquamarine;
+ background-image: url("/public/day.png");
+ background-size: cover;
+ transition: all 0.4s cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+.toggle-btn .switch{
+ display: block;
+ width: 35px;
+ height: 35px;
+ background-color: white;
+ border-radius: 50%;
+ box-shadow: 5px 0 10px rgba(0, 0, 0, 0.25),
+ inset 5px 0 10px rgba(0, 0, 0, 0.25);
+ cursor: pointer;
+}
+
+.toggle-btn.active{
+ background-image: url("public/night.jpg");
+}
+.toggle-btn.active .switch{
+ transform: translateX(calc(75px - 30px));
+}
+
+body{
+ margin: 0;
+ padding: 0;
+ min-height: 100vh;
+ background-color: white;
+ display: flex;
+ align-items: flex-end;
+ justify-content: flex-start;
+}
