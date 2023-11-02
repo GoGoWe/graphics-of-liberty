@@ -7,7 +7,7 @@ import {initEnvironment} from "./helper/environment";
 import {initCamera} from "./helper/camera";
 import {initControls} from "./helper/controls";
 import {initSound} from "./helper/sound";
-import {init_button} from "./helper/environment";
+
 
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
@@ -54,7 +54,6 @@ function init(){
     createStats(renderer, scene, camera);
     initStats();
 
-    init_button();
 
     window.addEventListener( 'resize', onWindowResize );
 

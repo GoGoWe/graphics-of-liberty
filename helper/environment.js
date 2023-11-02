@@ -2,12 +2,18 @@ import * as THREE from "three";
 import GUI from "lil-gui";
 import {Sky} from "three/addons/objects/Sky";
 import {initWater} from "./water";
+import renderer from "three/addons/renderers/common/Renderer";
+import exports from "three/addons/libs/tween.module";
 
 
 
 export function initEnvironment(scene,renderer){
+
+    /*let fogcolor=0xffffff;
+    scene.fog = new THREE.FogExp2( fogcolor, 0.001 );*/
+
 //Water
-let water=initWater(scene);
+    let water=initWater(scene);
 //Sky
     const sky = new Sky();
     sky.scale.setScalar( 1000000 );
@@ -21,7 +27,7 @@ let water=initWater(scene);
         elevation: 25,
         azimuth: -130,
         exposure: renderer.toneMappingExposure,
-        rayleigh: 2,
+        rayleigh: 0.5,
         mieDirectionalG: 0.975,
     };
 
@@ -37,7 +43,6 @@ let water=initWater(scene);
         const theta = THREE.MathUtils.degToRad( parameters.azimuth );
 
         sun.setFromSphericalCoords( 1, phi, theta );
-
         sky.material.uniforms[ 'sunPosition' ].value.copy( sun );
         water.material.uniforms[ 'sunDirection' ].value.copy( sun ).normalize();
 
@@ -53,12 +58,12 @@ let water=initWater(scene);
 
     updateSun();
 
-        function skyParamChanged(){
-            const uniforms = sky.material.uniforms;
-            renderer.toneMappingExposure = parameters.exposure;
-            uniforms[ 'rayleigh' ].value = parameters.rayleigh;
-            uniforms[ 'mieDirectionalG' ].value = parameters.mieDirectionalG;
-        }
+    function skyParamChanged(){
+        const uniforms = sky.material.uniforms;
+        renderer.toneMappingExposure = parameters.exposure;
+        uniforms[ 'rayleigh' ].value = parameters.rayleigh;
+        uniforms[ 'mieDirectionalG' ].value = parameters.mieDirectionalG;
+    }
 
     class ColorGUIHelper {
         constructor(object, prop) {
@@ -76,16 +81,19 @@ let water=initWater(scene);
     }
 
 
+
+
+
     // generate parametersetter
     const gui = new GUI();
 
     const folderSky = gui.addFolder( 'Sky' );
     renderer.toneMappingExposure=0.5;
-    folderSky.add( parameters, 'elevation', 0, 90, 0.1 ).onChange( updateSun );
-    folderSky.add( parameters, 'azimuth', - 180, 180, 0.1 ).onChange( updateSun );
-    folderSky.add( parameters, 'exposure', 0, 1, 0.0001 ).onChange( skyParamChanged );
-    folderSky.add( parameters, 'rayleigh', 0.0, 4, 0.001 ).onChange( skyParamChanged );
-    folderSky.add( parameters, 'mieDirectionalG', 0.0, 1, 0.001 ).onChange( skyParamChanged );
+    folderSky.add( parameters, 'elevation', -1.5, 90, 0.1 ).onChange( updateSun ).listen();
+    folderSky.add( parameters, 'azimuth', - 180, 180, 0.1 ).onChange( updateSun ).listen();
+    folderSky.add( parameters, 'exposure', 0, 1, 0.0001 ).onChange( skyParamChanged ).listen();
+    folderSky.add( parameters, 'rayleigh', 0.0, 4, 0.001 ).onChange( skyParamChanged ).listen();
+    folderSky.add( parameters, 'mieDirectionalG', 0.0, 1, 0.001 ).onChange( skyParamChanged ).listen();
     folderSky.open();
     skyParamChanged();
 
@@ -98,18 +106,49 @@ let water=initWater(scene);
     folderWater.add( waterUniforms.size, 'value', 5, 30, 0.1 ).name( 'size' );
     folderWater.open();
 
-    return water;
-}
-export function init_button(){
+
     $(document).ready(function () {
+        //console.log("par2",par)
         var togglebtn = $(".toggle-btn");
-        $(".switch").on("click", function () {
+        $(".switch").on("click", function (callback) {
             togglebtn.toggleClass("active");
             if (togglebtn.hasClass("active")) {
-                console.log("day");
-            } else {
+
+                parameters.azimuth= -178.4;
+                parameters.elevation= 8;
+                parameters.exposure= 0.35;
+                parameters.rayleigh= 0.2;
+                parameters.mieDirectionalG= 1;
                 console.log("night");
+
+            } else {
+                parameters.elevation= 81;
+                parameters.exposure= 0.5;
+                parameters.rayleigh= 0.5;
+                parameters.mieDirectionalG= 975;
+
+                console.log("day");
             }
+            const uniforms = sky.material.uniforms;
+            renderer.toneMappingExposure = parameters.exposure;
+            uniforms[ 'rayleigh' ].value = parameters.rayleigh;
+            uniforms[ 'mieDirectionalG' ].value = parameters.mieDirectionalG;
+            const phi = THREE.MathUtils.degToRad( 90 - parameters.elevation );
+            const theta = THREE.MathUtils.degToRad( parameters.azimuth );
+            sun.setFromSphericalCoords( 1, phi, theta );
+            sky.material.uniforms[ 'sunPosition' ].value.copy( sun );
+            water.material.uniforms[ 'sunDirection' ].value.copy( sun ).normalize();
+            if ( renderTarget !== undefined ) renderTarget.dispose();
+
+            sceneEnv.add( sky );
+            renderTarget = pmremGenerator.fromScene( sceneEnv );
+            scene.add( sky );
+
+            scene.environment = renderTarget.texture;
         });
     });
+
+
+
+    return water;
 }
