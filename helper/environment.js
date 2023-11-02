@@ -18,7 +18,7 @@ let water=initWater(scene);
     const pmremGenerator = new THREE.PMREMGenerator( renderer );
     let renderTarget;
     const parameters = {
-        elevation: 2,
+        elevation: 25,
         azimuth: -130,
         exposure: renderer.toneMappingExposure,
         rayleigh: 2,
@@ -76,32 +76,8 @@ let water=initWater(scene);
     }
 
 
-    //Directional Light
-    const dircolor = 0xFFFFFF;
-    const dirintensity = 1;
-    const dirlight = new THREE.DirectionalLight( dircolor, dirintensity );
-    dirlight.position.set( 0, 10, 0 );
-    dirlight.target.position.set( -5, 0, 0 );
-    scene.add( dirlight );
-    scene.add( dirlight.target );
-
-    const amcolor = 0xFFFFFF;
-    const amintensity = 1;
-    const amlight = new THREE.AmbientLight( amcolor, amintensity );
-    scene.add( amlight );
-
-
     // generate parametersetter
     const gui = new GUI();
-    gui.addColor(new ColorGUIHelper(dirlight, 'color'), 'value').name('color');
-    gui.add(dirlight, 'intensity', 0, 2, 0.01);
-    gui.add( dirlight.target.position, 'x', - 10, 10, .01 );
-    gui.add( dirlight.target.position, 'z', - 10, 10, .01 );
-    gui.add( dirlight.target.position, 'y', 0, 10, .01 );
-
-    gui.addColor(new ColorGUIHelper(amlight, 'color'), 'value').name('color');
-    gui.add(amlight, 'intensity', 0, 2, 0.01);
-
 
     const folderSky = gui.addFolder( 'Sky' );
     renderer.toneMappingExposure=0.5;
@@ -123,4 +99,17 @@ let water=initWater(scene);
     folderWater.open();
 
     return water;
+}
+export function init_button(){
+    $(document).ready(function () {
+        var togglebtn = $(".toggle-btn");
+        $(".switch").on("click", function () {
+            togglebtn.toggleClass("active");
+            if (togglebtn.hasClass("active")) {
+                console.log("day");
+            } else {
+                console.log("night");
+            }
+        });
+    });
 }
