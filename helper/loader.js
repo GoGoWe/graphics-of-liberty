@@ -1,22 +1,20 @@
-import * as THREE from "three";
+import {MeshBasicMaterial} from "three";
 
+function setupModel(data) {
+    return data.scene;
+}
 /** places object from path in scene*/
-export function loadObject(path, scene, loader,scalex,scaley,scalez,posx,posy,posz,rotx,roty,rotz){
-    let obj
-    loader.load( path, obj=function ( gltf ) {
-        console.log(gltf);
-        const object =gltf.scene;
-        object.material= new THREE.MeshBasicMaterial( { color: 0x505050 } );
-        scene.add(object);
-        object.scale.set(scalex,scaley,scalez);
-        object.rotation.set(rotx,roty,rotz);
-        object.position.set(posx,posy,posz)
-        return object;
+export async function loadObject(path, scene, loader, scalex, scaley, scalez, posx, posy, posz, rotx, roty, rotz) {
+    const objData = await loader.loadAsync(path);
+    let obj=setupModel(objData);
+    //obj.material= new MeshBasicMaterial( { color: 0x505050 } );
+    obj.position.set(posx, posy, posz);
+    obj.scale.set(scalex,scaley,scalez);
+    obj.rotation.set(rotx,roty,rotz);
+    scene.add(obj);
+    return obj;
 
-    }, undefined, function ( error ) {
 
-        console.error( error );
 
-    } );//*/
-    return obj
+
 }
