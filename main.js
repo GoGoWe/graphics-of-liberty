@@ -74,7 +74,7 @@ let renderZaehler=0;
 function render() {
     renderZaehler+=1;
     const time = performance.now()/10;
-    rotate(sailboat, -time*0.75,.8,Math.PI);
+    rotate(sailboat, -time*0.2,.1,Math.PI);
     rotate(cargoship,time,.9, Math.PI);
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     renderStats()

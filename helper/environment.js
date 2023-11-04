@@ -4,6 +4,9 @@ import {Sky} from "three/addons/objects/Sky";
 import {initWater} from "./water";
 import renderer from "three/addons/renderers/common/Renderer";
 import exports from "three/addons/libs/tween.module";
+import IESSpotLight from "three/addons/lights/IESSpotLight";
+import {IESLoader} from "three/addons/loaders/IESLoader";
+import {Euler} from "three";
 
 
 
@@ -147,6 +150,36 @@ export function initEnvironment(scene,renderer){
             scene.environment = renderTarget.texture;
         });
     });
+
+
+//spotlight
+
+    // white spotlight shining from the side, modulated by a texture, casting a shadow
+
+    function addSpotlight(originx,originy,originz,targetx,targety,targetz){
+        const spotLight = new THREE.SpotLight( 0xffffff ,20000);
+        spotLight.position.set( originx, originy, originz );
+
+        const targetObject = new THREE.Object3D();
+        scene.add(targetObject);
+        targetObject.position.x=targetx;
+        targetObject.position.y=targety;
+        targetObject.position.z=targetz;
+        spotLight.target = targetObject;
+        spotLight.castShadow = true;
+
+        spotLight.shadow.mapSize.width = 1024;
+        spotLight.shadow.mapSize.height = 1024;
+
+        spotLight.shadow.camera.near = 500;
+        spotLight.shadow.camera.far = 4000;
+        spotLight.shadow.camera.fov = 30;
+
+        scene.add( spotLight );
+    }
+    addSpotlight(20,20,0,0,80,0);
+    addSpotlight(-20,20,0,0,80,0);
+
 
 
 
