@@ -8,6 +8,7 @@ import {initCamera} from "./helper/camera";
 import {initControls} from "./helper/controls";
 import {initSound} from "./helper/sound";
 
+
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const renderer = new THREE.WebGLRenderer();
@@ -50,8 +51,9 @@ function init(){
 
     //stats
 
-    createStats(renderer, scene, camera)
+    createStats(renderer, scene, camera);
     initStats();
+
 
     window.addEventListener( 'resize', onWindowResize );
 
@@ -79,17 +81,7 @@ function render() {
 
 }
 
-$(document).ready(function (){
-    var togglebtn = $(".toggle-btn");
-    $(".switch").on("click",function (){
-        togglebtn.toggleClass("active");
-        if(togglebtn.hasClass("active")){
-            console.log("day");
-        } else {
-            console.log("night");
-        }
-    });
-});
+//renderer.toneMapping=THREE.ACESFilmicToneMapping;
 
 //animate
 function animate() {

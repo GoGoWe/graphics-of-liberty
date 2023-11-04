@@ -1,4 +1,4 @@
-import {MeshBasicMaterial} from "three";
+import * as THREE from "three";
 
 function setupModel(data) {
     return data.scene;
@@ -7,7 +7,6 @@ function setupModel(data) {
 export async function loadObject(path, scene, loader, scalex, scaley, scalez, posx, posy, posz, rotx, roty, rotz) {
     const objData = await loader.loadAsync(path);
     let obj=setupModel(objData);
-    //obj.material= new MeshBasicMaterial( { color: 0x505050 } );
     obj.position.set(posx, posy, posz);
     obj.scale.set(scalex,scaley,scalez);
     obj.rotation.set(rotx,roty,rotz);
