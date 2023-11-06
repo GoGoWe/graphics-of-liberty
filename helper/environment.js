@@ -7,6 +7,7 @@ import exports from "three/addons/libs/tween.module";
 import IESSpotLight from "three/addons/lights/IESSpotLight";
 import {IESLoader} from "three/addons/loaders/IESLoader";
 import {Euler} from "three";
+import {initSound, startSound} from "./sound";
 
 
 function addSpotlight(scene,originx,originy,originz,targetx,targety,targetz, intensity){
@@ -34,7 +35,7 @@ function addSpotlight(scene,originx,originy,originz,targetx,targety,targetz, int
 
 
 
-export function initEnvironment(scene,renderer){
+export function initEnvironment(scene,renderer,camera){
 
     /*let fogcolor=0xffffff;
     scene.fog = new THREE.FogExp2( fogcolor, 0.001 );*/
@@ -142,6 +143,14 @@ export function initEnvironment(scene,renderer){
     let spotlight1 =addSpotlight(scene,20,20,0,0,80,0, 0);
     let spotlight2= addSpotlight(scene,-20,20,0,0,80,0,0);
 
+
+    //sound
+    let [audioloader,listener]=initSound(camera);
+    let aliciaKeys=startSound(camera,'public/Sounds/Empire State of Mind (Part II) Broken Down.mp3',audioloader, listener ,false);
+    aliciaKeys.setVolume(0.4)
+    aliciaKeys.pause();
+    let doves=startSound(camera,'public/sounds/seagulls.mp3',audioloader,listener,true);
+
     $(document).ready(function () {
         //console.log("par2",par)
         var togglebtn = $(".toggle-btn");
@@ -155,6 +164,9 @@ export function initEnvironment(scene,renderer){
                 parameters.exposure= 0.35;
                 parameters.rayleigh= 0.2;
                 parameters.mieDirectionalG= 1;
+                doves.setVolume(0.2)
+                aliciaKeys.offset=65;
+                aliciaKeys.play();
                 console.log("night");
 
             } else {
@@ -164,7 +176,8 @@ export function initEnvironment(scene,renderer){
                 parameters.exposure= 0.5;
                 parameters.rayleigh= 0.5;
                 parameters.mieDirectionalG= 975;
-
+                doves.setVolume(0.5)
+                aliciaKeys.stop()
                 console.log("day");
             }
             const uniforms = sky.material.uniforms;

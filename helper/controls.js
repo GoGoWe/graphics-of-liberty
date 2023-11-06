@@ -11,6 +11,7 @@ export function initControls(camera,renderer){
     controls.dampingFactor = 0.05;
     controls.screenSpacePanning = false;
     controls.maxPolarAngle=Math.PI/2;
+    //controls.zoomSpeed=0;
     controls.keys = {
         LEFT: 'ArrowLeft', //left arrow
         UP: 'ArrowUp', // up arrow

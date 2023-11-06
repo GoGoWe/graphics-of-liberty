@@ -1,19 +1,22 @@
 import * as THREE from "three";
-
 export function initSound(camera){
     const listener = new THREE.AudioListener();
     camera.add( listener );
 
+    const audioLoader = new THREE.AudioLoader();
+
+
+    return [audioLoader, listener];
+}
+export function startSound(camera,path, audioLoader,listener, playwithload){
 
     const sound = new THREE.Audio( listener );
-
-    const audioLoader = new THREE.AudioLoader();
-    audioLoader.load( 'sounds/seagulls.mp3', function( buffer ) {
+    audioLoader.load( path, function( buffer ) {
         sound.setBuffer( buffer );
         sound.setLoop( true );
         sound.setVolume( 0.5 );
-        sound.play();
+        if(playwithload) sound.play();
     });
-
+    return sound;
 
 }
