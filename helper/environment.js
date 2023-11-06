@@ -9,6 +9,30 @@ import {IESLoader} from "three/addons/loaders/IESLoader";
 import {Euler} from "three";
 
 
+function addSpotlight(scene,originx,originy,originz,targetx,targety,targetz, intensity){
+    const spotLight = new THREE.SpotLight( 0xffffff ,intensity);
+    spotLight.position.set( originx, originy, originz );
+
+    const targetObject = new THREE.Object3D();
+    scene.add(targetObject);
+    targetObject.position.x=targetx;
+    targetObject.position.y=targety;
+    targetObject.position.z=targetz;
+    spotLight.target = targetObject;
+    spotLight.castShadow = true;
+
+    spotLight.shadow.mapSize.width = 1024;
+    spotLight.shadow.mapSize.height = 1024;
+
+    spotLight.shadow.camera.near = 500;
+    spotLight.shadow.camera.far = 4000;
+    spotLight.shadow.camera.fov = 30;
+
+    scene.add( spotLight );
+    return spotLight;
+}
+
+
 
 export function initEnvironment(scene,renderer){
 
@@ -110,13 +134,22 @@ export function initEnvironment(scene,renderer){
     folderWater.open();
 
 
+    //spotlight
+
+    // white spotlight shining from the side, modulated by a texture, casting a shadow
+
+
+    let spotlight1 =addSpotlight(scene,20,20,0,0,80,0, 0);
+    let spotlight2= addSpotlight(scene,-20,20,0,0,80,0,0);
+
     $(document).ready(function () {
         //console.log("par2",par)
         var togglebtn = $(".toggle-btn");
         $(".switch").on("click", function (callback) {
             togglebtn.toggleClass("active");
             if (togglebtn.hasClass("active")) {
-
+                spotlight1.intensity=20000;
+                spotlight2.intensity=20000;
                 parameters.azimuth= -178.4;
                 parameters.elevation= 8;
                 parameters.exposure= 0.35;
@@ -125,6 +158,8 @@ export function initEnvironment(scene,renderer){
                 console.log("night");
 
             } else {
+                spotlight1.intensity=0;
+                spotlight2.intensity=0;
                 parameters.elevation= 81;
                 parameters.exposure= 0.5;
                 parameters.rayleigh= 0.5;
@@ -152,33 +187,7 @@ export function initEnvironment(scene,renderer){
     });
 
 
-//spotlight
 
-    // white spotlight shining from the side, modulated by a texture, casting a shadow
-
-    function addSpotlight(originx,originy,originz,targetx,targety,targetz){
-        const spotLight = new THREE.SpotLight( 0xffffff ,20000);
-        spotLight.position.set( originx, originy, originz );
-
-        const targetObject = new THREE.Object3D();
-        scene.add(targetObject);
-        targetObject.position.x=targetx;
-        targetObject.position.y=targety;
-        targetObject.position.z=targetz;
-        spotLight.target = targetObject;
-        spotLight.castShadow = true;
-
-        spotLight.shadow.mapSize.width = 1024;
-        spotLight.shadow.mapSize.height = 1024;
-
-        spotLight.shadow.camera.near = 500;
-        spotLight.shadow.camera.far = 4000;
-        spotLight.shadow.camera.fov = 30;
-
-        scene.add( spotLight );
-    }
-    addSpotlight(20,20,0,0,80,0);
-    addSpotlight(-20,20,0,0,80,0);
 
 
 
