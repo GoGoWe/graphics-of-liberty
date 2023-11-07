@@ -54,3 +54,62 @@ body{
  align-items: flex-end;
  justify-content: flex-start;
 }
+
+.collapsible {
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+}
+
+.active, .collapsible:hover {
+    background-color: #555;
+}
+
+.content {
+    padding: 0 18px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    background-color: #f1f1f1;
+}
+
+.controlsCollapsible{
+    position: absolute;
+    left: 88%;
+    top: 40%;
+    width:12%;
+    height:10%;
+    display: flow;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    font-family: 'Agency FB',serif;
+    background: rgba(255, 255, 255, 0.0);
+}
+
+.arrow-button {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    background-color: #ccc;
+    border: 1px solid #999;
+    margin: 5px;
+}
+
+.arrow-button.active {
+    background-color: white;
+}
+
+.middle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    font-family: 'Agency FB',serif;
+}
