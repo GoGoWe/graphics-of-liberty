@@ -147,7 +147,7 @@ export function initEnvironment(scene,renderer,camera){
     //sound
     let [audioloader,listener]=initSound(camera);
     let aliciaKeys=startSound(camera,'public/Sounds/Empire State of Mind (Part II) Broken Down.mp3',audioloader, listener ,false);
-    aliciaKeys.setVolume(0.4)
+    aliciaKeys.setVolume(0.25)
     aliciaKeys.pause();
     let doves=startSound(camera,'public/sounds/seagulls.mp3',audioloader,listener,true);
 
