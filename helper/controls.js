@@ -10,7 +10,7 @@ export function initControls(camera,renderer){
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.screenSpacePanning = false;
-    controls.maxPolarAngle=Math.PI/2;
+    //controls.maxPolarAngle=Math.PI/2;
     controls.keys = {
         LEFT: 'ArrowLeft', //left arrow
         UP: 'ArrowUp', // up arrow
@@ -23,6 +23,38 @@ export function initControls(camera,renderer){
         if (event.key === "1") {
             camera.position.set( 0, 80, 150 );
             controls.target.set(0,40,0);
+            controls.update();
+        }
+    });
+
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "2") {
+            camera.position.set( 10, 5, -170 );
+            controls.target.set(0,40,0);
+            controls.update();
+        }
+    });
+
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "3") {
+            camera.position.set( -10, 15, 30 );
+            controls.target.set(0,40,0);
+            controls.update();
+        }
+    });
+
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "4") {
+            camera.position.set( -30, 5, -170 );
+            controls.target.set(0,40,0);
+            controls.update();
+        }
+    });
+
+    document.addEventListener("keydown", function(event) {
+        if (event.key === "5") {
+            camera.rotate.y+=Math.PI/16;
+            //controls.target.set(0,40,0);
             controls.update();
         }
     });
