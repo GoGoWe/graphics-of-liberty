@@ -11,3 +11,6 @@ then always make sure to run <br>
 >       cd <reporsitory directory>
 >       npx vite
 
+# Known Limitations
+
+Right click pan toggles to rotation unpredictibly during touchpad use.

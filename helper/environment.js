@@ -165,7 +165,7 @@ export function initEnvironment(scene,renderer,camera){
                 parameters.rayleigh= 0.2;
                 parameters.mieDirectionalG= 1;
                 doves.setVolume(0.2)
-                aliciaKeys.offset=65;
+                aliciaKeys.offset=68;
                 aliciaKeys.play();
                 console.log("night");
 
