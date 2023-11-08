@@ -1,10 +1,16 @@
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import { FlyControls } from 'three/addons/controls/FlyControls.js';
 
 export function initControls(camera,renderer){
+        const controls = new FlyControls(camera, renderer.domElement);
 
-
+        controls.movementSpeed = 1000;
+        controls.domElement = renderer.domElement;
+        controls.rollSpeed = Math.PI / 12;
+        controls.autoForward = false;
+        controls.dragToLook = true;
 //set controls
-    const controls = new OrbitControls(camera, renderer.domElement);
+    /*const controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0,40,0);
     controls.listenToKeyEvents(window);
     controls.enableDamping = true;
@@ -58,7 +64,7 @@ export function initControls(camera,renderer){
             //controls.target.set(0,40,0);
             controls.update();
         }
-    });
+    });*/
 
     return controls;
 }
