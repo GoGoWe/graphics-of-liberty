@@ -75,7 +75,7 @@ body{
     padding: 0 18px;
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.2s ease-out;
+    transition: max-height 0.5s ease-out;
     background-color: #f1f1f1;
 }
 
@@ -112,4 +112,16 @@ body{
     justify-content: center;
     vertical-align: middle;
     font-family: 'Agency FB',serif;
+}
+
+.collapsible:after {
+    content: '\002B';
+    color: white;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.collapsible.active:after {
+    content: "\2212"; /* Unicode character for "minus" sign (-) */
 }
