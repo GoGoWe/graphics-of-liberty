@@ -17,7 +17,7 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.5;
 document.body.appendChild( renderer.domElement );
-
+const clock = new THREE.Clock();
 
 let water, camera, controls;
 
@@ -46,10 +46,7 @@ function init(){
 
     water=initEnvironment(scene,renderer,camera);
 
-
-    controls=initControls(camera,renderer);
-
-
+    controls = initControls(camera, renderer);
 
     //stats
 
@@ -89,10 +86,12 @@ function render() {
 
 //animate
 function animate() {
-    controls.update()
+    const delta = clock.getDelta();
+    console.log(controls);
+    controls.movementSpeed = 50;
+    controls.update(delta);
     requestAnimationFrame( animate );
     render();
-
 }
 
 animate();
