@@ -12,6 +12,8 @@ import { startSound } from "./helper/sound";
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const renderer = new THREE.WebGLRenderer();
+const clock = new THREE.Clock();
+
 let renderCount = 0;
 let water, camera, controls;
 let statue = null,
@@ -24,13 +26,8 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.5;
 document.body.appendChild( renderer.domElement );
-const clock = new THREE.Clock();
 
-let water, camera, controls;
-
-let statue=null,
-    sailboat=null,
-    cargoship=null;
+//** Initialize the scene */
 function init(){
 
     loadObject('./public/statue_of_liberty.glb', scene, loader, 1, 1, 1, 0,
