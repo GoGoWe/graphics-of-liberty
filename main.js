@@ -23,10 +23,15 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.5;
-document.body.appendChild(renderer.domElement);
+document.body.appendChild( renderer.domElement );
+const clock = new THREE.Clock();
 
-/** Initialization Function */
-function init() {
+let water, camera, controls;
+
+let statue=null,
+    sailboat=null,
+    cargoship=null;
+function init(){
 
     loadObject('./public/statue_of_liberty.glb', scene, loader, 1, 1, 1, 0,
     0, 0, 0, -Math.PI / 2, 0).then(r => {
@@ -43,6 +48,7 @@ function init() {
         1, -50, 0, Math.PI / 3, 0).then(r => {
             cargoship = r;
         });
+
 
     camera = initCamera(innerWidth, innerHeight);
     water = initEnvironment(scene, renderer, camera);
@@ -62,10 +68,12 @@ function init() {
 
 //** Animation Function to update controls and animations recursively */
 function animate() {
-    controls.update()
-    requestAnimationFrame(animate);
+    const delta = clock.getDelta();
+    console.log(controls);
+    controls.movementSpeed = 50;
+    controls.update(delta);
+    requestAnimationFrame( animate );
     render();
-
 }
 
 //** Rendering Function invoked by the animation*/
