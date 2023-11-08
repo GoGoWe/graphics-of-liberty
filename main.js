@@ -6,8 +6,7 @@ import {rotate} from "./helper/animator";
 import {initEnvironment} from "./helper/environment";
 import {initCamera} from "./helper/camera";
 import {initControls} from "./helper/controls";
-import {startSound} from "./helper/sound";
-
+import {OrbitControls} from "three/addons/controls/OrbitControls";
 
 const scene = new THREE.Scene();
 const loader = new GLTFLoader();
@@ -82,16 +81,38 @@ function render() {
 
 }
 
-//renderer.toneMapping=THREE.ACESFilmicToneMapping;
+document.addEventListener("keydown", function(event) {
+    if (event.key === "1") {
+        controls=initControls(camera,renderer);
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "2") {
+        controls = new OrbitControls(camera, renderer.domElement);
+        controls.target.set(0,40,0);
+        controls.listenToKeyEvents(window);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.screenSpacePanning = false;
+        //controls.maxPolarAngle=Math.PI/2;
+        //controls.zoomSpeed=0;
+        controls.keys = {
+            LEFT: 'ArrowLeft', //left arrow
+            UP: 'ArrowUp', // up arrow
+            RIGHT: 'ArrowRight', // right arrow
+            BOTTOM: 'ArrowDown' // down arrow
+        }
+        controls.update()
+    }
+});
 
 //animate
 function animate() {
     const delta = clock.getDelta();
     console.log(controls);
-    controls.movementSpeed = 50;
     controls.update(delta);
     requestAnimationFrame( animate );
     render();
 }
-
 animate();
