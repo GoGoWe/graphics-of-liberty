@@ -1,28 +1,24 @@
 import Stats from "three/addons/libs/stats.module";
 
 
-// global variables
-let thisrenderer;
-let thisscene;
-let thiscamera;
+//** Global variables */
 let stats;
 
-export function initStats(renderer, scene, camera) {
-    thisrenderer=renderer;
-    thisscene=scene;
-    thiscamera=camera;
-    stats = createStats();
+export function initStats() {
+    createStats();
     document.body.appendChild( stats.domElement );
 
     // call the render function
     renderStats();
 }
 
-
+//** Update  */
 export function renderStats() {
     //requestAnimationFrame(renderStats);
     stats.update();
-}//*/
+}
+
+//** Create statistic panel and set its position*/
 export function createStats() {
     stats = new Stats();
     stats.setMode(0);
