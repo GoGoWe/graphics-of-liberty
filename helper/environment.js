@@ -2,11 +2,6 @@ import * as THREE from "three";
 import GUI from "lil-gui";
 import {Sky} from "three/addons/objects/Sky";
 import {initWater} from "./water";
-import renderer from "three/addons/renderers/common/Renderer";
-import exports from "three/addons/libs/tween.module";
-import IESSpotLight from "three/addons/lights/IESSpotLight";
-import {IESLoader} from "three/addons/loaders/IESLoader";
-import {Euler} from "three";
 import {initSound, startSound} from "./sound";
 
 

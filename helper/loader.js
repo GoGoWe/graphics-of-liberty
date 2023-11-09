@@ -1,5 +1,3 @@
-import * as THREE from "three";
-
 function setupModel(data) {
     return data.scene;
 }
