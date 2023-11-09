@@ -103,6 +103,9 @@ document.addEventListener("keydown", function(event) {
             controls.enabled = true;
             controls.autoRotate = true;
         }
+        controls.target.set(0, 40, 0);
+        camera.position.set(0, 80, 200);
+        controls.update();
     }
 });
 
@@ -117,7 +120,7 @@ document.addEventListener("keydown", function(event) {
             controls.autoRotate = false;
         }
         camera.position.set( -10, 15, 30 );
-        controls.target.set(0,50,0);
+        controls.target.set(0,55,0);
         controls.update();
     }
 });
