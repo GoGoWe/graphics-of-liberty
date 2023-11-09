@@ -1,12 +1,14 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { loadObject } from "./helper/loader";
-import { createStats, initStats, renderStats } from "./helper/stats"
-import { rotate } from "./helper/animator";
-import { initEnvironment } from "./helper/environment";
-import { initCamera } from "./helper/camera";
-import { initControls } from "./helper/controls";
-import { startSound } from "./helper/sound";
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {loadObject} from "./helper/loader";
+import {createStats, initStats, renderStats} from "./helper/stats"
+import {rotate} from "./helper/animator";
+import {initEnvironment} from "./helper/environment";
+import {initCamera} from "./helper/camera";
+import {initControls} from "./helper/controls";
+import {OrbitControls} from "three/addons/controls/OrbitControls";
+import { FlyControls } from 'three/addons/controls/FlyControls.js';
+
 
 //** Global constants and variables */
 const scene = new THREE.Scene();
@@ -63,11 +65,105 @@ function init(){
 
 }
 
+function initOrbitControls(camera,renderer,movement, autoRotate) {
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 40, 0);
+    controls.listenToKeyEvents(window);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.screenSpacePanning = false;
+    controls.autoRotate = autoRotate;
+    controls.keys = {
+        LEFT: 'ArrowLeft', //left arrow
+        UP: 'ArrowUp', // up arrow
+        RIGHT: 'ArrowRight', // right arrow
+        BOTTOM: 'ArrowDown' // down arrow
+    }
+    controls.enabled = movement;
+    controls.update()
+    return controls;
+}
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "1") {
+        if(controls instanceof OrbitControls) {
+            controls.dispose();
+            controls = initControls(camera, renderer);
+        }
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "2") {
+        if(controls instanceof FlyControls) {
+            controls.dispose();
+            initOrbitControls(camera,renderer, true, true);
+        }
+        if(controls.enabled === false){
+            controls.enabled = true;
+            controls.autoRotate = true;
+        }
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "3") {
+        if(controls instanceof FlyControls) {
+            controls.dispose();
+            controls = initOrbitControls(camera, renderer, false, false);
+        }
+        if(controls.enabled === true){
+            controls.enabled = false;
+            controls.autoRotate = false;
+        }
+        camera.position.set( -10, 15, 30 );
+        controls.target.set(0,50,0);
+        controls.update();
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "4") {
+        if(controls instanceof FlyControls) {
+            controls.dispose();
+            controls = initOrbitControls(camera, renderer, false, false);
+        }
+        if(controls.enabled === true){
+            controls.enabled = false;
+            controls.autoRotate = false;
+        }
+        camera.position.set( -20, 5, -170 );
+        controls.target.set(0, 40, 0);
+        controls.update();
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "5") {
+        if(controls instanceof FlyControls) {
+            controls.dispose();
+            controls = initOrbitControls(camera, renderer, false, false);
+        }
+        if(controls.enabled === true){
+            controls.enabled = false;
+            controls.autoRotate = false;
+        }
+        camera.position.set( -117, 8, -100 );
+        controls.target.set(0, 25, -143);
+        controls.update();
+    }
+});
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "6") {
+        console.log(camera.position)
+    }
+});
+
+//animate
 //** Animation Function to update controls and animations recursively */
 function animate() {
     const delta = clock.getDelta();
-    console.log(controls);
-    controls.movementSpeed = 50;
     controls.update(delta);
     requestAnimationFrame( animate );
     render();
@@ -80,7 +176,7 @@ function render() {
     rotate(sailboat, -time * 0.2, .1, Math.PI);
     rotate(cargoship, time, .9, Math.PI);
     water.material.uniforms['time'].value += 1.0 / 60.0;
-    
+
     // Update statistics (FPS, latency, etc.)
     renderStats()
     renderer.render(scene, camera);

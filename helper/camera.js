@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import {round} from "three/nodes";
 
 export function initCamera(width, height){
 //set camera angle
