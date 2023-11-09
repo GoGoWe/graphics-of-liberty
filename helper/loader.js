@@ -1,6 +1,7 @@
 function setupModel(data) {
     return data.scene;
 }
+
 /** places object from path in scene*/
 export async function loadObject(path, scene, loader, scalex, scaley, scalez, posx, posy, posz, rotx, roty, rotz) {
     const objData = await loader.loadAsync(path);
@@ -10,8 +11,5 @@ export async function loadObject(path, scene, loader, scalex, scaley, scalez, po
     obj.rotation.set(rotx,roty,rotz);
     scene.add(obj);
     return obj;
-
-
-
 
 }

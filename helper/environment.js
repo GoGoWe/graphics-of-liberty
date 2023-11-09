@@ -28,16 +28,11 @@ function addSpotlight(scene,originx,originy,originz,targetx,targety,targetz, int
     return spotLight;
 }
 
-
-
 export function initEnvironment(scene,renderer,camera){
 
-    /*let fogcolor=0xffffff;
-    scene.fog = new THREE.FogExp2( fogcolor, 0.001 );*/
-
-//Water
+    // Water
     let water=initWater(scene);
-//Sky
+    // Sky
     const sky = new Sky();
     sky.scale.setScalar( 1000000 );
     scene.add( sky );
@@ -102,9 +97,6 @@ export function initEnvironment(scene,renderer,camera){
             this.object[this.prop].set(hexString);
         }
     }
-
-
-
 
 
     // generate parametersetter
@@ -193,12 +185,6 @@ export function initEnvironment(scene,renderer,camera){
             scene.environment = renderTarget.texture;
         });
     });
-
-
-
-
-
-
 
     return water;
 }

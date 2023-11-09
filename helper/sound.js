@@ -1,4 +1,5 @@
 import * as THREE from "three";
+
 export function initSound(camera){
     const listener = new THREE.AudioListener();
     camera.add( listener );
@@ -8,6 +9,7 @@ export function initSound(camera){
 
     return [audioLoader, listener];
 }
+
 export function startSound(camera,path, audioLoader,listener, playwithload){
 
     const sound = new THREE.Audio( listener );
