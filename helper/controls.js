@@ -13,27 +13,6 @@ export function initControls(camera,renderer){
         controls.dragToLook = true;
         return controls;
     }
-
-    document.addEventListener("keydown", function(event) {
-        if (event.key === "3") {
-            camera.position.set( -10, 15, 30 );
-            controls.update();
-        }
-    });
-
-    document.addEventListener("keydown", function(event) {
-        if (event.key === "4") {
-            camera.position.set( -30, 5, -170 );
-            controls.update();
-        }
-    });
-
-    document.addEventListener("keydown", function(event) {
-        if (event.key === "5") {
-            camera.rotate.y+=Math.PI/16;
-            controls.update();
-        }
-    });
 //set controls
     /*
    let coll = document.getElementsByClassName("collapsible");
