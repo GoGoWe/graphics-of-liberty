@@ -14,7 +14,7 @@ export function initControls(camera,renderer){
         return controls;
     }
 //set controls
-    /*
+
    let coll = document.getElementsByClassName("collapsible");
     let i;
 
@@ -101,7 +101,7 @@ export function initControls(camera,renderer){
                 leftButton.classList.add('active');
                 break;
         }
-    });*/
+    });
 
     return initFlyControls(camera,renderer);
 }
