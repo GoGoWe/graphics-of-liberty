@@ -16,7 +16,6 @@ const loader = new GLTFLoader();
 const renderer = new THREE.WebGLRenderer();
 const clock = new THREE.Clock();
 
-let renderCount = 0;
 let water, camera, controls;
 let statue = null,    sailboat = null,    cargoship = null,    yanBoat=null;
 
