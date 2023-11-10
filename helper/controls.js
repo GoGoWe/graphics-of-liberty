@@ -50,28 +50,24 @@ export function initControls(camera,renderer){
         resetArrowButtons();
         upButton.classList.add('active');
         // Trigger your button event here
-        simulateKeyboardEvent('ArrowUp');
     });
 
     downButton.addEventListener('click', () => {
         resetArrowButtons();
         downButton.classList.add('active');
         // Trigger your button event here
-        simulateKeyboardEvent('ArrowDown');
     });
 
     rightButton.addEventListener('click', () => {
         resetArrowButtons();
         rightButton.classList.add('active');
         // Trigger your button event here
-        simulateKeyboardEvent('ArrowRight');
     });
 
     leftButton.addEventListener('click', () => {
         resetArrowButtons();
         leftButton.classList.add('active');
         // Trigger your button event here
-        simulateKeyboardEvent('ArrowLeft');
     });
 
 
@@ -102,6 +98,8 @@ export function initControls(camera,renderer){
                 break;
         }
     });
+
+    document.addEventListener('keyup', (event) => {resetArrowButtons();});
 
     return initFlyControls(camera,renderer);
 }
