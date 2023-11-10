@@ -18,9 +18,7 @@ const clock = new THREE.Clock();
 
 let renderCount = 0;
 let water, camera, controls;
-let statue = null,
-    sailboat = null,
-    cargoship = null;
+let statue = null,    sailboat = null,    cargoship = null,    yanBoat=null;
 
 //** Configure renderer */
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -37,14 +35,18 @@ function init() {
         statue = r;
     });
 
-    loadObject('./public/sailingboat.glb',scene,loader,1,1,1,0,
-        0,0,0,-Math.PI/2,0).then(r=>{
+    loadObject('./public/sailingboat.glb',scene,loader,2,2,2,0,
+        0,0,0,0,0).then(r=>{
             sailboat=r;
         //sailboat.orientationY=Math.PI/2;
     });
     loadObject('./public/boat_chris.glb',scene,loader,1,1,1,0,
         0,0,0,Math.PI/3,0).then(r=>{
             cargoship=r;
+    });
+    loadObject('./public/BOAT_anim.glb',scene,loader,3,3,3,0,
+        100,0,0,-Math.PI/2,0).then(r=>{
+        yanBoat=r;
     });
 
 
@@ -156,10 +158,10 @@ document.addEventListener("keydown", function(event) {
 document.addEventListener("keydown", function(event) {
     if (event.key === "6") {
         console.log(camera.position)
+
     }
 });
-let renderZaehler = 0;
-//animate
+
 //** Animation Function to update controls and animations recursively */
 function animate() {
     const delta = clock.getDelta();
@@ -172,10 +174,12 @@ function animate() {
 
 function render() {
     const time = performance.now();
-    rotate(sailboat, time,.4,Math.PI,-100,
-        0.85,0);
+    rotate(sailboat, -time,.4,Math.PI,-100,
+        1.2,0);
     rotate(cargoship,time*2/3,.9, 0,150,
         1,-50);
+    rotate(yanBoat,-time/30,2, Math.PI,0,
+        12,-50);
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     renderStats()
     renderer.render(scene, camera);
