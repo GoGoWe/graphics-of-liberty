@@ -18,11 +18,8 @@ const clock = new THREE.Clock();
 var ray = new THREE.Raycaster()
 var timeAfterCollision = Date.now();
 
-let renderCount = 0;
 let water, camera, controls;
-let statue = null,
-    sailboat = null,
-    cargoship = null;
+let statue = null,    sailboat = null,    cargoship = null,    yanBoat=null;
 
 //** Configure renderer */
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -71,7 +68,7 @@ function initOrbitControls(camera, renderer, movement, autoRotate) {
     controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 40, 0);
     controls.listenToKeyEvents(window);
-    controls.enableDamping = true;
+    controls.enableDamping = false;
     controls.dampingFactor = 0.05;
     controls.screenSpacePanning = false;
     controls.autoRotate = autoRotate;
@@ -100,12 +97,16 @@ document.addEventListener("keydown", function (event) {
     if (event.key === "2") {
         if (controls instanceof FlyControls) {
             controls.dispose();
-            initOrbitControls(camera, renderer, true, true);
+            initOrbitControls(camera,renderer, false, false);
+        }else {
+            if (controls.enabled === true) {
+                controls.enabled = false;
+            }
+            controls.autoRotate = controls.autoRotate === false;
         }
-        if (controls.enabled === false) {
-            controls.enabled = true;
-            controls.autoRotate = true;
-        }
+        camera.position.set(0, 80, 200);
+        controls.target.set(0, 40, 0);
+        controls.update();
     }
 });
 
@@ -114,13 +115,16 @@ document.addEventListener("keydown", function (event) {
         if (controls instanceof FlyControls) {
             controls.dispose();
             controls = initOrbitControls(camera, renderer, false, false);
-        }
-        if (controls.enabled === true) {
-            controls.enabled = false;
-            controls.autoRotate = false;
+        }else {
+            if (controls.enabled === true) {
+                controls.enabled = false;
+            }
+            if (controls.autoRotate === true) {
+                controls.autoRotate = false;
+            }
         }
         camera.position.set(-10, 15, 30);
-        controls.target.set(0, 50, 0);
+        controls.target.set(0, 55, 0);
         controls.update();
     }
 });
@@ -130,10 +134,13 @@ document.addEventListener("keydown", function (event) {
         if (controls instanceof FlyControls) {
             controls.dispose();
             controls = initOrbitControls(camera, renderer, false, false);
-        }
-        if (controls.enabled === true) {
-            controls.enabled = false;
-            controls.autoRotate = false;
+        }else {
+            if (controls.enabled === true) {
+                controls.enabled = false;
+            }
+            if (controls.autoRotate === true) {
+                controls.autoRotate = false;
+            }
         }
         camera.position.set(-20, 5, -170);
         controls.target.set(0, 40, 0);
@@ -146,10 +153,13 @@ document.addEventListener("keydown", function (event) {
         if (controls instanceof FlyControls) {
             controls.dispose();
             controls = initOrbitControls(camera, renderer, false, false);
-        }
-        if (controls.enabled === true) {
-            controls.enabled = false;
-            controls.autoRotate = false;
+        }else {
+            if (controls.enabled === true) {
+                controls.enabled = false;
+            }
+            if (controls.autoRotate === true) {
+                controls.autoRotate = false;
+            }
         }
         camera.position.set(-117, 8, -100);
         controls.target.set(0, 25, -143);
@@ -159,7 +169,17 @@ document.addEventListener("keydown", function (event) {
 
 document.addEventListener("keydown", function (event) {
     if (event.key === "6") {
-        console.log(camera.position)
+        if(controls instanceof FlyControls) {
+            controls.dispose();
+            controls = initOrbitControls(camera, renderer, true, false);
+        }else {
+            if (controls.enabled === false) {
+                controls.enabled = true;
+            }
+            if (controls.autoRotate === true) {
+                controls.autoRotate = false;
+            }
+        }
     }
 });
 
@@ -196,14 +216,16 @@ function animate() {
 }
 
 //** Rendering Function invoked by the animation*/
-function render() {
-    renderCount += 1;
-    const time = performance.now() / 10;
-    rotate(sailboat, -time * 0.2, .1, Math.PI);
-    rotate(cargoship, time, .9, Math.PI);
-    water.material.uniforms['time'].value += 1.0 / 60.0;
 
-    // Update statistics (FPS, latency, etc.)
+function render() {
+    const time = performance.now();
+    rotate(sailboat, -time,.4,Math.PI,-100,
+        1.2,0);
+    rotate(cargoship,time*2/3,.9, 0,150,
+        1,-50);
+    rotate(yanBoat,-time/30,2, Math.PI,0,
+        12,-50);
+    water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     renderStats()
     renderer.render(scene, camera);
 

@@ -10,6 +10,6 @@ export function initCamera(width, height){
     console.log(aspect)
     const camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
     camera.position.set( 0, 80, 150 );
-
+    camera.rotateX(-Math.PI/16)
     return camera;
 }
