@@ -69,7 +69,7 @@ function initOrbitControls(camera,renderer,movement, autoRotate) {
     controls = new OrbitControls(camera, renderer.domElement);
     controls.target.set(0, 40, 0);
     controls.listenToKeyEvents(window);
-    controls.enableDamping = true;
+    controls.enableDamping = false;
     controls.dampingFactor = 0.05;
     controls.screenSpacePanning = false;
     controls.autoRotate = autoRotate;
@@ -97,14 +97,15 @@ document.addEventListener("keydown", function(event) {
     if (event.key === "2") {
         if(controls instanceof FlyControls) {
             controls.dispose();
-            initOrbitControls(camera,renderer, true, true);
+            initOrbitControls(camera,renderer, false, false);
+        }else {
+            if (controls.enabled === true) {
+                controls.enabled = false;
+            }
+            controls.autoRotate = controls.autoRotate === false;
         }
-        if(controls.enabled === false){
-            controls.enabled = true;
-            controls.autoRotate = true;
-        }
-        controls.target.set(0, 40, 0);
         camera.position.set(0, 80, 200);
+        controls.target.set(0, 40, 0);
         controls.update();
     }
 });
@@ -114,10 +115,13 @@ document.addEventListener("keydown", function(event) {
         if(controls instanceof FlyControls) {
             controls.dispose();
             controls = initOrbitControls(camera, renderer, false, false);
-        }
-        if(controls.enabled === true){
-            controls.enabled = false;
-            controls.autoRotate = false;
+        }else {
+            if (controls.enabled === true) {
+                controls.enabled = false;
+            }
+            if (controls.autoRotate === true) {
+                controls.autoRotate = false;
+            }
         }
         camera.position.set( -10, 15, 30 );
         controls.target.set(0,55,0);
@@ -130,10 +134,13 @@ document.addEventListener("keydown", function(event) {
         if(controls instanceof FlyControls) {
             controls.dispose();
             controls = initOrbitControls(camera, renderer, false, false);
-        }
-        if(controls.enabled === true){
-            controls.enabled = false;
-            controls.autoRotate = false;
+        }else {
+            if (controls.enabled === true) {
+                controls.enabled = false;
+            }
+            if (controls.autoRotate === true) {
+                controls.autoRotate = false;
+            }
         }
         camera.position.set( -20, 5, -170 );
         controls.target.set(0, 40, 0);
@@ -146,10 +153,13 @@ document.addEventListener("keydown", function(event) {
         if(controls instanceof FlyControls) {
             controls.dispose();
             controls = initOrbitControls(camera, renderer, false, false);
-        }
-        if(controls.enabled === true){
-            controls.enabled = false;
-            controls.autoRotate = false;
+        }else {
+            if (controls.enabled === true) {
+                controls.enabled = false;
+            }
+            if (controls.autoRotate === true) {
+                controls.autoRotate = false;
+            }
         }
         camera.position.set( -117, 8, -100 );
         controls.target.set(0, 25, -143);
@@ -159,8 +169,17 @@ document.addEventListener("keydown", function(event) {
 
 document.addEventListener("keydown", function(event) {
     if (event.key === "6") {
-        console.log(camera.position)
-
+        if(controls instanceof FlyControls) {
+            controls.dispose();
+            controls = initOrbitControls(camera, renderer, true, false);
+        }else {
+            if (controls.enabled === false) {
+                controls.enabled = true;
+            }
+            if (controls.autoRotate === true) {
+                controls.autoRotate = false;
+            }
+        }
     }
 });
 
