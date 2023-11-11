@@ -206,7 +206,7 @@ function animate() {
     const delta = clock.getDelta();
     ray.setFromCamera(new THREE.Vector3(0, 0, 0), camera);
     var collisionResults = ray.intersectObjects(scene.children, true);
-    if (collisionResults.length > 0 && collisionResults[0].distance < 10 && Date.now() - timeAfterCollision > 100) {
+    if (collisionResults.length > 0 && collisionResults[0].distance < 10 && Date.now() - timeAfterCollision > 50) {
         collisionDetected("s");        
     }
     
