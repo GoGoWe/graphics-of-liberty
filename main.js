@@ -120,11 +120,13 @@ document.addEventListener("keydown", function (event) {
                 controls.enabled = false;
             }
             controls.autoRotate = controls.autoRotate === false;
+            if(controls.autoRotate) document.getElementById("status").textContent="AutoP";
+            else document.getElementById("status").textContent="Locked";
         }
         camera.position.set(0, 80, 200);
         controls.target.set(0, 40, 0);
         controls.update();
-        document.getElementById("status").textContent="Locked";
+
         document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
     }
 
