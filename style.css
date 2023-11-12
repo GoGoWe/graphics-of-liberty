@@ -14,6 +14,22 @@
     background: rgba(255, 255, 255, 0.0);
     pointer-events: none;
 }
+.status{
+    position: absolute;
+    left: 95%;
+    top: 95%;
+    width:5%;
+    height:5%;
+    font-size: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    font-family: 'Agency FB',serif;
+    background: rgba(255, 255, 255, 0.5);
+    pointer-events: none;
+    border-radius: 5%;
+}
 
 .toggle-btn{
  position: absolute;

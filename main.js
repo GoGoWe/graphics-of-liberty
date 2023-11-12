@@ -90,6 +90,7 @@ document.addEventListener("keydown", function (event) {
             controls.dispose();
             controls = initControls(camera, renderer);
         }
+        document.getElementById("status").textContent="Flight";
         document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
     }
 });
@@ -108,6 +109,7 @@ document.addEventListener("keydown", function (event) {
         camera.position.set(0, 80, 200);
         controls.target.set(0, 40, 0);
         controls.update();
+        document.getElementById("status").textContent="Locked";
         document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
     }
 });
@@ -125,6 +127,7 @@ document.addEventListener("keydown", function (event) {
                 controls.autoRotate = false;
             }
         }
+        document.getElementById("status").textContent="Locked";
         camera.position.set(-10, 15, 30);
         controls.target.set(0, 55, 0);
         controls.update();
@@ -148,6 +151,7 @@ document.addEventListener("keydown", function (event) {
         camera.position.set(-20, 5, -170);
         controls.target.set(0, 40, 0);
         controls.update();
+        document.getElementById("status").textContent="Locked";
         document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
     }
 });
@@ -168,6 +172,7 @@ document.addEventListener("keydown", function (event) {
         camera.position.set(-117, 8, -100);
         controls.target.set(0, 25, -143);
         controls.update();
+        document.getElementById("status").textContent="Locked";
         document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
     }
 });
@@ -185,6 +190,8 @@ document.addEventListener("keydown", function (event) {
                 controls.autoRotate = false;
             }
         }
+
+        document.getElementById("status").textContent="Orbit";
         document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
     }
 });
@@ -193,7 +200,7 @@ function collisionDetected(freeCollisionKey) {
     controls.enabled = false;
     controls.dispose();
     console.log("Press " + freeCollisionKey + " to free the camera");
-
+    document.getElementById("status").textContent="Tap S";
 
     // Wait for keypress s before enabling controls again
     document.addEventListener("keydown", function freeCollision(event) {
@@ -202,6 +209,7 @@ function collisionDetected(freeCollisionKey) {
             controls = initControls(camera, renderer);
             controls.enabled = true;
             document.removeEventListener("keydown", freeCollision);
+            document.getElementById("status").textContent="Flight";
         }
     });
 
@@ -210,10 +218,12 @@ function collisionDetected(freeCollisionKey) {
 //** Animation Function to update controls and animations recursively */
 function animate() {
     const delta = clock.getDelta();
-    ray.setFromCamera(new THREE.Vector3(0, 0, 0), camera);
-    var collisionResults = ray.intersectObjects(scene.children, true);
-    if (collisionResults.length > 0 && collisionResults[0].distance < 10 && Date.now() - timeAfterCollision > 50) {
-        collisionDetected("s");        
+    if(controls instanceof FlyControls) {
+        ray.setFromCamera(new THREE.Vector3(0, 0, 0), camera);
+        var collisionResults = ray.intersectObjects(scene.children, true);
+        if (collisionResults.length > 0 && collisionResults[0].distance < 10 && Date.now() - timeAfterCollision > 50) {
+            collisionDetected("s");
+        }
     }
     
     controls.update(delta);
