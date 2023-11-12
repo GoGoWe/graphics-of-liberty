@@ -93,10 +93,25 @@ document.addEventListener("keydown", function (event) {
         document.getElementById("status").textContent="Flight";
         document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
     }
-});
 
-document.addEventListener("keydown", function (event) {
     if (event.key === "2") {
+        if(controls instanceof FlyControls) {
+            controls.dispose();
+            controls = initOrbitControls(camera, renderer, true, false);
+        }else {
+            if (controls.enabled === false) {
+                controls.enabled = true;
+            }
+            if (controls.autoRotate === true) {
+                controls.autoRotate = false;
+            }
+        }
+
+        document.getElementById("status").textContent="Orbit";
+        document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
+    }
+
+    if (event.key === "3") {
         if (controls instanceof FlyControls) {
             controls.dispose();
             initOrbitControls(camera,renderer, false, false);
@@ -112,30 +127,7 @@ document.addEventListener("keydown", function (event) {
         document.getElementById("status").textContent="Locked";
         document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
     }
-});
 
-document.addEventListener("keydown", function (event) {
-    if (event.key === "3") {
-        if (controls instanceof FlyControls) {
-            controls.dispose();
-            controls = initOrbitControls(camera, renderer, false, false);
-        }else {
-            if (controls.enabled === true) {
-                controls.enabled = false;
-            }
-            if (controls.autoRotate === true) {
-                controls.autoRotate = false;
-            }
-        }
-        document.getElementById("status").textContent="Locked";
-        camera.position.set(-10, 15, 30);
-        controls.target.set(0, 55, 0);
-        controls.update();
-        document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
-    }
-});
-
-document.addEventListener("keydown", function (event) {
     if (event.key === "4") {
         if (controls instanceof FlyControls) {
             controls.dispose();
@@ -154,9 +146,7 @@ document.addEventListener("keydown", function (event) {
         document.getElementById("status").textContent="Locked";
         document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
     }
-});
 
-document.addEventListener("keydown", function (event) {
     if (event.key === "5") {
         if (controls instanceof FlyControls) {
             controls.dispose();
@@ -173,27 +163,26 @@ document.addEventListener("keydown", function (event) {
         controls.target.set(0, 25, -143);
         controls.update();
         document.getElementById("status").textContent="Locked";
-        document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
-    }
-});
-
-document.addEventListener("keydown", function (event) {
+        document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";}
     if (event.key === "6") {
-        if(controls instanceof FlyControls) {
+        if (controls instanceof FlyControls) {
             controls.dispose();
-            controls = initOrbitControls(camera, renderer, true, false);
+            controls = initOrbitControls(camera, renderer, false, false);
         }else {
-            if (controls.enabled === false) {
-                controls.enabled = true;
+            if (controls.enabled === true) {
+                controls.enabled = false;
             }
             if (controls.autoRotate === true) {
                 controls.autoRotate = false;
             }
         }
-
-        document.getElementById("status").textContent="Orbit";
+        document.getElementById("status").textContent="Locked";
+        camera.position.set(-10, 15, 30);
+        controls.target.set(0, 55, 0);
+        controls.update();
         document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
     }
+
 });
 
 function collisionDetected(freeCollisionKey) {
