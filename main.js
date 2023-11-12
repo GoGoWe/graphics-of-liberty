@@ -90,6 +90,7 @@ document.addEventListener("keydown", function (event) {
             controls.dispose();
             controls = initControls(camera, renderer);
         }
+        document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
     }
 });
 
@@ -107,6 +108,7 @@ document.addEventListener("keydown", function (event) {
         camera.position.set(0, 80, 200);
         controls.target.set(0, 40, 0);
         controls.update();
+        document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
     }
 });
 
@@ -126,6 +128,7 @@ document.addEventListener("keydown", function (event) {
         camera.position.set(-10, 15, 30);
         controls.target.set(0, 55, 0);
         controls.update();
+        document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
     }
 });
 
@@ -145,6 +148,7 @@ document.addEventListener("keydown", function (event) {
         camera.position.set(-20, 5, -170);
         controls.target.set(0, 40, 0);
         controls.update();
+        document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
     }
 });
 
@@ -164,6 +168,7 @@ document.addEventListener("keydown", function (event) {
         camera.position.set(-117, 8, -100);
         controls.target.set(0, 25, -143);
         controls.update();
+        document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
     }
 });
 
@@ -180,6 +185,7 @@ document.addEventListener("keydown", function (event) {
                 controls.autoRotate = false;
             }
         }
+        document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
     }
 });
 
