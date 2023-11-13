@@ -98,89 +98,64 @@ document.addEventListener("keydown", function (event) {
             if(controls instanceof FlyControls) {
                 controls.dispose();
                 controls = initOrbitControls(camera, renderer, true, false);
-            }else {
-                if (controls.enabled === false) {
-                    controls.enabled = true;
-                }
-                if (controls.autoRotate === true) {
-                    controls.autoRotate = false;
-                }
             }
-
+            controls.enabled = true;
+            controls.autoRotate = false;
             document.getElementById("status").textContent="Orbit";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
             break;
         case "3":
             if (controls instanceof FlyControls) {
                 controls.dispose();
-                initOrbitControls(camera,renderer, false, false);
+                initOrbitControls(camera,renderer, false, true);
             }else {
-                if (controls.enabled === true) {
-                    controls.enabled = false;
-                }
-                controls.autoRotate = controls.autoRotate === false;
-                if(controls.autoRotate) document.getElementById("status").textContent="AutoP";
-                else document.getElementById("status").textContent="Locked";
+                controls.enabled = false;
+                controls.autoRotate = !controls.autoRotate; // TODO: Should this rely be toggled i would remove this else completely
+                document.getElementById("status").textContent = controls.autoRotate ? "AutoP" : "Locked";
             }
+            document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
+            
             camera.position.set(0, 80, 200);
             controls.target.set(0, 40, 0);
-            controls.update();
-
-            document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
-            break
+            break;
         case "4":
             if (controls instanceof FlyControls) {
                 controls.dispose();
                 controls = initOrbitControls(camera, renderer, false, false);
-            }else {
-                if (controls.enabled === true) {
-                    controls.enabled = false;
-                }
-                if (controls.autoRotate === true) {
-                    controls.autoRotate = false;
-                }
             }
-            camera.position.set(-20, 5, -170);
-            controls.target.set(0, 40, 0);
-            controls.update();
+            controls.enabled = false;
+            controls.autoRotate = false;
             document.getElementById("status").textContent="Locked";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
+
+            camera.position.set(-20, 5, -170);
+            controls.target.set(0, 40, 0);
             break;
         case "5":
             if (controls instanceof FlyControls) {
                 controls.dispose();
                 controls = initOrbitControls(camera, renderer, false, false);
-            }else {
-                if (controls.enabled === true) {
-                    controls.enabled = false;
-                }
-                if (controls.autoRotate === true) {
-                    controls.autoRotate = false;
-                }
             }
-            camera.position.set(-117, 8, -100);
-            controls.target.set(0, 25, -143);
-            controls.update();
+            controls.enabled = false;
+            controls.autoRotate = false;
             document.getElementById("status").textContent="Locked";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
+
+            camera.position.set(-117, 8, -100);
+            controls.target.set(0, 25, -143);
             break;
         case "6":
             if (controls instanceof FlyControls) {
                 controls.dispose();
                 controls = initOrbitControls(camera, renderer, false, false);
-            }else {
-                if (controls.enabled === true) {
-                    controls.enabled = false;
-                }
-                if (controls.autoRotate === true) {
-                    controls.autoRotate = false;
-                }
             }
+            controls.enabled = false;
+            controls.autoRotate = false;
             document.getElementById("status").textContent="Locked";
+            document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
+
             camera.position.set(-10, 15, 30);
             controls.target.set(0, 55, 0);
-            controls.update();
-            document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
             break;
     }
 });
