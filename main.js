@@ -103,8 +103,6 @@ document.addEventListener("keydown", function (event) {
         document.getElementById("status").textContent="Flight";
         document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
     }
-});
-
     if (event.key === "2") {
         if(controls instanceof FlyControls) {
             controls.dispose();
@@ -195,7 +193,6 @@ document.addEventListener("keydown", function (event) {
         controls.update();
         document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
     }
-
 });
 
 function collisionDetected(freeCollisionKey) {
