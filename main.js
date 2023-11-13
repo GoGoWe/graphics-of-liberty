@@ -15,8 +15,14 @@ const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const renderer = new THREE.WebGLRenderer();
 const clock = new THREE.Clock();
-var ray = new THREE.Raycaster()
-var timeAfterCollision = Date.now();
+let ray = new THREE.Raycaster()
+let timeAfterCollision = Date.now();
+
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+let intersects;
+let confetti = new THREE.Group();
+let confettiParticles = [];
 
 let water, camera, controls;
 let statue = null,    sailboat = null,    cargoship = null,    yanBoat=null;
@@ -27,6 +33,10 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.5;
 document.body.appendChild(renderer.domElement);
+
+window.addEventListener( 'pointermove', onPointerMove );
+
+window.requestAnimationFrame(render);
 
 //** Initialize the scene */
 function init() {
@@ -199,17 +209,86 @@ function collisionDetected(freeCollisionKey) {
         }
     });
 
-}   
+}
+
+function onPointerMove( event ) {
+    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+document.addEventListener('keydown', function(event) {
+    if (event.code === 'Space') {
+        raycaster.setFromCamera( pointer, camera );
+        intersects = raycaster.intersectObjects( scene.children );
+        let position = new THREE.Vector3(intersects[0].point.x, intersects[0].point.y, intersects[0].point.z);
+        confettiParticles.push(createConfetti(position));
+        console.log(confettiParticles);
+        if (confettiParticles.length > 30){
+            confetti.remove(confetti.children[0]);
+            confettiParticles.shift();
+        }
+    }
+});
+
+function createConfetti(position) {
+    let particleGeometry = new THREE.BufferGeometry();
+    let colors = new Float32Array(100 * 3);
+    let particleCount = 100;
+    let positions = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount * 3; i += 3) {
+        let theta = Math.random() * Math.PI * 2;
+        let phi = Math.random() * Math.PI;
+        let radius = Math.random() * 2;
+
+        positions[i] = radius * Math.sin(phi) * Math.cos(theta) + position.x;
+        positions[i + 1] = radius * Math.cos(phi) + position.y;
+        positions[i + 2] = radius * Math.sin(phi) * Math.sin(theta) + position.z;
+
+        colors[i] = Math.random();
+        colors[i + 1] = Math.random();
+        colors[i + 2] = Math.random();
+    }
+
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    let particleMaterial = new THREE.PointsMaterial({
+        size: 0.3,
+        vertexColors: true
+    });
+
+    let particles = new THREE.Points(particleGeometry, particleMaterial);
+    confetti.add(particles);
+
+    return particles;
+}
+scene.add(confetti);
+
+
+function animateParticles(){
+    for (let i = 0; i < confettiParticles.length; i++) {
+        let particles = confettiParticles[i];
+        let positions = particles.geometry.attributes.position.array;
+
+        for (let j = 0; j < positions.length; j += 3) {
+            positions[j] += (Math.random() - 0.5) * 0.5;
+            positions[j + 1] += (Math.random() - 0.9) * 0.2;
+            positions[j + 2] += (Math.random() - 0.5) * 0.5;
+        }
+        particles.geometry.attributes.position.needsUpdate = true;
+    }
+}
 
 //** Animation Function to update controls and animations recursively */
 function animate() {
     const delta = clock.getDelta();
     ray.setFromCamera(new THREE.Vector3(0, 0, 0), camera);
-    var collisionResults = ray.intersectObjects(scene.children, true);
+    let collisionResults = ray.intersectObjects(scene.children, true);
     if (collisionResults.length > 0 && collisionResults[0].distance < 10 && Date.now() - timeAfterCollision > 50) {
         collisionDetected("s");        
     }
-    
+    animateParticles();
     controls.update(delta);
     requestAnimationFrame(animate);
     render();
@@ -228,7 +307,6 @@ function render() {
     water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
     renderStats()
     renderer.render(scene, camera);
-
 }
 
 init();
