@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { loadObject } from "./helper/loader";
-import { createStats, initStats, renderStats } from "./helper/stats"
-import { rotate } from "./helper/animator";
-import { initEnvironment } from "./helper/environment";
-import { initCamera } from "./helper/camera";
-import { initControls } from "./helper/controls";
-import { OrbitControls } from "three/addons/controls/OrbitControls";
-import { FlyControls } from 'three/addons/controls/FlyControls.js';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {loadObject} from "./helper/loader";
+import {createStats, initStats, renderStats} from "./helper/stats"
+import {rotate} from "./helper/animator";
+import {initEnvironment} from "./helper/environment";
+import {initCamera} from "./helper/camera";
+import {initControls} from "./helper/controls";
+import {OrbitControls} from "three/addons/controls/OrbitControls";
+import {FlyControls} from 'three/addons/controls/FlyControls.js';
 
 
 //** Global constants and variables */
@@ -19,36 +19,46 @@ var ray = new THREE.Raycaster()
 var timeAfterCollision = Date.now();
 
 let water, camera, controls;
-let statue = null,    sailboat = null,    cargoship = null,    yanBoat=null;
+let statue = null, sailboat = null, cargoship = null, yanBoat = null;
 
 //** Configure renderer */
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.5;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 document.body.appendChild(renderer.domElement);
 
 //** Initialize the scene */
 function init() {
 
     loadObject('./public/statue_of_liberty.glb', scene, loader, 1, 1, 1, 0,
-    0, 0, 0, -Math.PI / 2, 0).then(r => {
-            statue = r;
+        0, 0, 0, -Math.PI / 2, 0).then(r => {
+        statue = r;
+        statue.traverse((object) => {
+            if (object.isMesh) {
+                object.castShadow = true;
+                object.receiveShadow = true;
+                object.selfShadow=true;
+            }
         });
+    });
+
 
     loadObject('./public/sailingboat.glb', scene, loader, 1, 1, 1, -100,
-    1, 0, 0, -Math.PI / 2, 0).then(r => {
-            sailboat = r;
-            //sailboat.orientationY=Math.PI/2;
-        });
+        1, 0, 0, -Math.PI / 2, 0).then(r => {
+        sailboat = r;
+        //sailboat.orientationY=Math.PI/2;
+    });
 
     loadObject('./public/boat_chris.glb', scene, loader, 1, 1, 1, 150,
-    1, -50, 0, Math.PI / 3, 0).then(r => {
-            cargoship = r;
-        });
+        1, -50, 0, Math.PI / 3, 0).then(r => {
+        cargoship = r;
+    });
 
 
-    camera = initCamera(innerWidth, innerHeight);    
+    camera = initCamera(innerWidth, innerHeight);
     water = initEnvironment(scene, renderer, camera);
     controls = initControls(camera, renderer);
 
@@ -90,15 +100,15 @@ document.addEventListener("keydown", function (event) {
             controls.dispose();
             controls = initControls(camera, renderer);
         }
-        document.getElementById("status").textContent="Flight";
-        document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
+        document.getElementById("status").textContent = "Flight";
+        document.getElementById("mainTitle").style.color = "rgba(1,1,1,0)";
     }
 
     if (event.key === "2") {
-        if(controls instanceof FlyControls) {
+        if (controls instanceof FlyControls) {
             controls.dispose();
             controls = initOrbitControls(camera, renderer, true, false);
-        }else {
+        } else {
             if (controls.enabled === false) {
                 controls.enabled = true;
             }
@@ -107,34 +117,34 @@ document.addEventListener("keydown", function (event) {
             }
         }
 
-        document.getElementById("status").textContent="Orbit";
-        document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
+        document.getElementById("status").textContent = "Orbit";
+        document.getElementById("mainTitle").style.color = "rgba(1,1,1,0)";
     }
 
     if (event.key === "3") {
         if (controls instanceof FlyControls) {
             controls.dispose();
-            initOrbitControls(camera,renderer, false, false);
-        }else {
+            initOrbitControls(camera, renderer, false, false);
+        } else {
             if (controls.enabled === true) {
                 controls.enabled = false;
             }
             controls.autoRotate = controls.autoRotate === false;
-            if(controls.autoRotate) document.getElementById("status").textContent="AutoP";
-            else document.getElementById("status").textContent="Locked";
+            if (controls.autoRotate) document.getElementById("status").textContent = "AutoP";
+            else document.getElementById("status").textContent = "Locked";
         }
         camera.position.set(0, 80, 200);
         controls.target.set(0, 40, 0);
         controls.update();
 
-        document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
+        document.getElementById("mainTitle").style.color = "rgba(1,1,1,1)";
     }
 
     if (event.key === "4") {
         if (controls instanceof FlyControls) {
             controls.dispose();
             controls = initOrbitControls(camera, renderer, false, false);
-        }else {
+        } else {
             if (controls.enabled === true) {
                 controls.enabled = false;
             }
@@ -145,15 +155,15 @@ document.addEventListener("keydown", function (event) {
         camera.position.set(-20, 5, -170);
         controls.target.set(0, 40, 0);
         controls.update();
-        document.getElementById("status").textContent="Locked";
-        document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
+        document.getElementById("status").textContent = "Locked";
+        document.getElementById("mainTitle").style.color = "rgba(1,1,1,1)";
     }
 
     if (event.key === "5") {
         if (controls instanceof FlyControls) {
             controls.dispose();
             controls = initOrbitControls(camera, renderer, false, false);
-        }else {
+        } else {
             if (controls.enabled === true) {
                 controls.enabled = false;
             }
@@ -164,13 +174,14 @@ document.addEventListener("keydown", function (event) {
         camera.position.set(-117, 8, -100);
         controls.target.set(0, 25, -143);
         controls.update();
-        document.getElementById("status").textContent="Locked";
-        document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";}
+        document.getElementById("status").textContent = "Locked";
+        document.getElementById("mainTitle").style.color = "rgba(1,1,1,1)";
+    }
     if (event.key === "6") {
         if (controls instanceof FlyControls) {
             controls.dispose();
             controls = initOrbitControls(camera, renderer, false, false);
-        }else {
+        } else {
             if (controls.enabled === true) {
                 controls.enabled = false;
             }
@@ -178,11 +189,11 @@ document.addEventListener("keydown", function (event) {
                 controls.autoRotate = false;
             }
         }
-        document.getElementById("status").textContent="Locked";
+        document.getElementById("status").textContent = "Locked";
         camera.position.set(-10, 15, 30);
         controls.target.set(0, 55, 0);
         controls.update();
-        document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
+        document.getElementById("mainTitle").style.color = "rgba(1,1,1,0)";
     }
 
 });
@@ -191,7 +202,7 @@ function collisionDetected(freeCollisionKey) {
     controls.enabled = false;
     controls.dispose();
     console.log("Press " + freeCollisionKey + " to free the camera");
-    document.getElementById("status").textContent="Tap S";
+    document.getElementById("status").textContent = "Tap S";
 
     // Wait for keypress s before enabling controls again
     document.addEventListener("keydown", function freeCollision(event) {
@@ -200,23 +211,23 @@ function collisionDetected(freeCollisionKey) {
             controls = initControls(camera, renderer);
             controls.enabled = true;
             document.removeEventListener("keydown", freeCollision);
-            document.getElementById("status").textContent="Flight";
+            document.getElementById("status").textContent = "Flight";
         }
     });
 
-}   
+}
 
 //** Animation Function to update controls and animations recursively */
 function animate() {
     const delta = clock.getDelta();
-    if(controls instanceof FlyControls) {
+    if (controls instanceof FlyControls) {
         ray.setFromCamera(new THREE.Vector3(0, 0, 0), camera);
         var collisionResults = ray.intersectObjects(scene.children, true);
         if (collisionResults.length > 0 && collisionResults[0].distance < 10 && Date.now() - timeAfterCollision > 50) {
             collisionDetected("s");
         }
     }
-    
+
     controls.update(delta);
     requestAnimationFrame(animate);
     render();
@@ -226,13 +237,13 @@ function animate() {
 
 function render() {
     const time = performance.now();
-    rotate(sailboat, -time,.4,Math.PI,-100,
-        1.2,0);
-    rotate(cargoship,time*2/3,.9, 0,150,
-        1,-50);
-    rotate(yanBoat,-time/30,2, Math.PI,0,
-        12,-50);
-    water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
+    rotate(sailboat, -time, .4, Math.PI, -100,
+        1.2, 0);
+    rotate(cargoship, time * 2 / 3, .9, 0, 150,
+        1, -50);
+    rotate(yanBoat, -time / 30, 2, Math.PI, 0,
+        12, -50);
+    water.material.uniforms['time'].value += 1.0 / 60.0;
     renderStats()
     renderer.render(scene, camera);
 
