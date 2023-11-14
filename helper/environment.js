@@ -136,12 +136,12 @@ export function initEnvironment(scene,renderer,camera){
     let spotlight2= addSpotlight(scene,-30,20,0,0,80,0,0);
     let spotlight3= addSpotlight(scene,0,20,30,0,80,0,0);
     sunspotlight.castShadow=true;
-    sunspotlight.shadow.mapSize.width=80192;
-    sunspotlight.shadow.mapSize.height=80192;
+    sunspotlight.shadow.mapSize.width=8192;
+    sunspotlight.shadow.mapSize.height=8192;
     sunspotlight.shadow.camera.near=0.5;
     sunspotlight.shadow.camera.far=2000;
     sunspotlight.shadow.camera.focus=1;//*/
-    sunspotlight.shadow.bias=-0.000005
+    sunspotlight.shadow.bias=-0.000001
 
 
 

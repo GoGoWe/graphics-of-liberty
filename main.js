@@ -15,7 +15,7 @@ const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const renderer = new THREE.WebGLRenderer();
 const clock = new THREE.Clock();
-let ray = new THREE.Raycaster()
+let ray = new THREE.Raycaster(undefined, undefined, 0, undefined)
 let timeAfterCollision = Date.now();
 
 const raycaster = new THREE.Raycaster();
@@ -66,6 +66,7 @@ function init() {
     1, -50, 0, Math.PI / 3, 0).then(r => {
             cargoship = r;
         });
+
 
 
     camera = initCamera(innerWidth, innerHeight);
