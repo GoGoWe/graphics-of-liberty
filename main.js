@@ -66,7 +66,10 @@ function init() {
     1, -50, 0, Math.PI / 3, 0).then(r => {
             cargoship = r;
         });
-
+    loadObject('./public/BOAT_anim.glb',scene,loader,3,3,3,0,
+        100,0,0,-Math.PI/2,0).then(r=>{
+        yanBoat=r;
+    });
 
 
     camera = initCamera(innerWidth, innerHeight);
