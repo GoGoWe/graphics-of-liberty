@@ -141,6 +141,7 @@ export function initEnvironment(scene,renderer,camera){
     sunspotlight.shadow.camera.near=0.5;
     sunspotlight.shadow.camera.far=2000;
     sunspotlight.shadow.camera.focus=1;//*/
+    sunspotlight.shadow.bias=-0.000005
 
 
 
@@ -166,7 +167,7 @@ export function initEnvironment(scene,renderer,camera){
                 parameters.azimuth= -178.4;
                 parameters.elevation= 8;
                 parameters.exposure= 0.35;
-                parameters.rayleigh= 0.2;
+                parameters.rayleigh= 0.1;
                 parameters.mieDirectionalG= 1;
                 doves.setVolume(0.5);
                 aliciaKeys.offset=68;
