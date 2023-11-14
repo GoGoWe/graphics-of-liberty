@@ -15,11 +15,17 @@ const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const renderer = new THREE.WebGLRenderer();
 const clock = new THREE.Clock();
-var ray = new THREE.Raycaster()
-var timeAfterCollision = Date.now();
+let ray = new THREE.Raycaster()
+let timeAfterCollision = Date.now();
+
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+let intersects;
+let confetti = new THREE.Group();
+let confettiParticles = [];
 
 let water, camera, controls;
-let statue = null, sailboat = null, cargoship = null, yanBoat = null;
+let statue = null,    sailboat = null,    cargoship = null,    yanBoat=null;
 
 //** Configure renderer */
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -29,6 +35,10 @@ renderer.toneMappingExposure = 0.5;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 document.body.appendChild(renderer.domElement);
+
+window.addEventListener( 'pointermove', onPointerMove );
+
+window.requestAnimationFrame(render);
 
 //** Initialize the scene */
 function init() {
@@ -47,15 +57,15 @@ function init() {
 
 
     loadObject('./public/sailingboat.glb', scene, loader, 1, 1, 1, -100,
-        1, 0, 0, -Math.PI / 2, 0).then(r => {
-        sailboat = r;
-        //sailboat.orientationY=Math.PI/2;
-    });
+    1, 0, 0, -Math.PI / 2, 0).then(r => {
+            sailboat = r;
+            //sailboat.orientationY=Math.PI/2;
+        });
 
     loadObject('./public/boat_chris.glb', scene, loader, 1, 1, 1, 150,
-        1, -50, 0, Math.PI / 3, 0).then(r => {
-        cargoship = r;
-    });
+    1, -50, 0, Math.PI / 3, 0).then(r => {
+            cargoship = r;
+        });
 
 
     camera = initCamera(innerWidth, innerHeight);
@@ -95,105 +105,78 @@ function initOrbitControls(camera, renderer, movement, autoRotate) {
 
 //** Event listener for keydown events to change camera position*/
 document.addEventListener("keydown", function (event) {
-    if (event.key === "1") {
-        if (controls instanceof OrbitControls) {
-            controls.dispose();
-            controls = initControls(camera, renderer);
-        }
-        document.getElementById("status").textContent = "Flight";
-        document.getElementById("mainTitle").style.color = "rgba(1,1,1,0)";
-    }
-
-    if (event.key === "2") {
-        if (controls instanceof FlyControls) {
-            controls.dispose();
-            controls = initOrbitControls(camera, renderer, true, false);
-        } else {
-            if (controls.enabled === false) {
-                controls.enabled = true;
+    switch (event.key) {
+        case "1":
+            if (controls instanceof OrbitControls) {
+                controls.dispose();
+                controls = initControls(camera, renderer);
             }
-            if (controls.autoRotate === true) {
-                controls.autoRotate = false;
+            document.getElementById("status").textContent="Flight";
+            document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
+            break;
+        case "2":
+            if(controls instanceof FlyControls) {
+                controls.dispose();
+                controls = initOrbitControls(camera, renderer, true, false);
             }
-        }
-
-        document.getElementById("status").textContent = "Orbit";
-        document.getElementById("mainTitle").style.color = "rgba(1,1,1,0)";
-    }
-
-    if (event.key === "3") {
-        if (controls instanceof FlyControls) {
-            controls.dispose();
-            initOrbitControls(camera, renderer, false, false);
-        } else {
-            if (controls.enabled === true) {
+            controls.enabled = true;
+            controls.autoRotate = false;
+            document.getElementById("status").textContent="Orbit";
+            document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
+            break;
+        case "3":
+            if (controls instanceof FlyControls) {
+                controls.dispose();
+                initOrbitControls(camera,renderer, false, true);
+            }else {
                 controls.enabled = false;
+                controls.autoRotate = !controls.autoRotate; // TODO: Should this rely be toggled i would remove this else completely
+                document.getElementById("status").textContent = controls.autoRotate ? "AutoP" : "Locked";
             }
-            controls.autoRotate = controls.autoRotate === false;
-            if (controls.autoRotate) document.getElementById("status").textContent = "AutoP";
-            else document.getElementById("status").textContent = "Locked";
-        }
-        camera.position.set(0, 80, 200);
-        controls.target.set(0, 40, 0);
-        controls.update();
+            document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
 
-        document.getElementById("mainTitle").style.color = "rgba(1,1,1,1)";
-    }
+            camera.position.set(0, 80, 200);
+            controls.target.set(0, 40, 0);
+            break;
+        case "4":
+            if (controls instanceof FlyControls) {
+                controls.dispose();
+                controls = initOrbitControls(camera, renderer, false, false);
+            }
+            controls.enabled = false;
+            controls.autoRotate = false;
+            document.getElementById("status").textContent="Locked";
+            document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
 
-    if (event.key === "4") {
-        if (controls instanceof FlyControls) {
-            controls.dispose();
-            controls = initOrbitControls(camera, renderer, false, false);
-        } else {
-            if (controls.enabled === true) {
-                controls.enabled = false;
+            camera.position.set(-20, 5, -170);
+            controls.target.set(0, 40, 0);
+            break;
+        case "5":
+            if (controls instanceof FlyControls) {
+                controls.dispose();
+                controls = initOrbitControls(camera, renderer, false, false);
             }
-            if (controls.autoRotate === true) {
-                controls.autoRotate = false;
-            }
-        }
-        camera.position.set(-20, 5, -170);
-        controls.target.set(0, 40, 0);
-        controls.update();
-        document.getElementById("status").textContent = "Locked";
-        document.getElementById("mainTitle").style.color = "rgba(1,1,1,1)";
-    }
+            controls.enabled = false;
+            controls.autoRotate = false;
+            document.getElementById("status").textContent="Locked";
+            document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
 
-    if (event.key === "5") {
-        if (controls instanceof FlyControls) {
-            controls.dispose();
-            controls = initOrbitControls(camera, renderer, false, false);
-        } else {
-            if (controls.enabled === true) {
-                controls.enabled = false;
+            camera.position.set(-117, 8, -100);
+            controls.target.set(0, 25, -143);
+            break;
+        case "6":
+            if (controls instanceof FlyControls) {
+                controls.dispose();
+                controls = initOrbitControls(camera, renderer, false, false);
             }
-            if (controls.autoRotate === true) {
-                controls.autoRotate = false;
-            }
-        }
-        camera.position.set(-117, 8, -100);
-        controls.target.set(0, 25, -143);
-        controls.update();
-        document.getElementById("status").textContent = "Locked";
-        document.getElementById("mainTitle").style.color = "rgba(1,1,1,1)";
-    }
-    if (event.key === "6") {
-        if (controls instanceof FlyControls) {
-            controls.dispose();
-            controls = initOrbitControls(camera, renderer, false, false);
-        } else {
-            if (controls.enabled === true) {
-                controls.enabled = false;
-            }
-            if (controls.autoRotate === true) {
-                controls.autoRotate = false;
-            }
-        }
-        document.getElementById("status").textContent = "Locked";
-        camera.position.set(-10, 15, 30);
-        controls.target.set(0, 55, 0);
-        controls.update();
-        document.getElementById("mainTitle").style.color = "rgba(1,1,1,0)";
+            controls.enabled = false;
+            controls.autoRotate = false;
+            document.getElementById("status").textContent="Locked";
+            document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
+
+            camera.position.set(-10, 15, 30);
+            controls.target.set(0, 55, 0);
+            break;
     }
 
 });
@@ -202,7 +185,7 @@ function collisionDetected(freeCollisionKey) {
     controls.enabled = false;
     controls.dispose();
     console.log("Press " + freeCollisionKey + " to free the camera");
-    document.getElementById("status").textContent = "Tap S";
+    document.getElementById("status").textContent="Tap S";
 
     // Wait for keypress s before enabling controls again
     document.addEventListener("keydown", function freeCollision(event) {
@@ -211,10 +194,79 @@ function collisionDetected(freeCollisionKey) {
             controls = initControls(camera, renderer);
             controls.enabled = true;
             document.removeEventListener("keydown", freeCollision);
-            document.getElementById("status").textContent = "Flight";
+            document.getElementById("status").textContent="Flight";
         }
     });
 
+}
+
+function onPointerMove( event ) {
+    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+document.addEventListener('keydown', function(event) {
+    if (event.code === 'Space') {
+        raycaster.setFromCamera( pointer, camera );
+        intersects = raycaster.intersectObjects( scene.children );
+        let position = new THREE.Vector3(intersects[0].point.x, intersects[0].point.y, intersects[0].point.z);
+        confettiParticles.push(createConfetti(position));
+        console.log(confettiParticles);
+        if (confettiParticles.length > 30){
+            confetti.remove(confetti.children[0]);
+            confettiParticles.shift();
+        }
+    }
+});
+
+function createConfetti(position) {
+    let particleGeometry = new THREE.BufferGeometry();
+    let colors = new Float32Array(100 * 3);
+    let particleCount = 100;
+    let positions = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount * 3; i += 3) {
+        let theta = Math.random() * Math.PI * 2;
+        let phi = Math.random() * Math.PI;
+        let radius = Math.random() * 2;
+
+        positions[i] = radius * Math.sin(phi) * Math.cos(theta) + position.x;
+        positions[i + 1] = radius * Math.cos(phi) + position.y;
+        positions[i + 2] = radius * Math.sin(phi) * Math.sin(theta) + position.z;
+
+        colors[i] = Math.random();
+        colors[i + 1] = Math.random();
+        colors[i + 2] = Math.random();
+    }
+
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    let particleMaterial = new THREE.PointsMaterial({
+        size: 0.3,
+        vertexColors: true
+    });
+
+    let particles = new THREE.Points(particleGeometry, particleMaterial);
+    confetti.add(particles);
+
+    return particles;
+}
+scene.add(confetti);
+
+
+function animateParticles(){
+    for (let i = 0; i < confettiParticles.length; i++) {
+        let particles = confettiParticles[i];
+        let positions = particles.geometry.attributes.position.array;
+
+        for (let j = 0; j < positions.length; j += 3) {
+            positions[j] += (Math.random() - 0.5) * 0.5;
+            positions[j + 1] += (Math.random() - 0.9) * 0.2;
+            positions[j + 2] += (Math.random() - 0.5) * 0.5;
+        }
+        particles.geometry.attributes.position.needsUpdate = true;
+    }
 }
 
 //** Animation Function to update controls and animations recursively */
@@ -227,7 +279,7 @@ function animate() {
             collisionDetected("s");
         }
     }
-
+    animateParticles();
     controls.update(delta);
     requestAnimationFrame(animate);
     render();
