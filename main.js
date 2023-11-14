@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {loadObject} from "./helper/loader";
 import {createStats, initStats, renderStats} from "./helper/stats"
-import {rotate} from "./helper/animator";
+import {animateParticles, createConfetti, rotate} from "./helper/animator";
 import {initEnvironment} from "./helper/environment";
 import {initCamera} from "./helper/camera";
 import {initControls} from "./helper/controls";
@@ -214,7 +214,7 @@ document.addEventListener('keydown', function(event) {
         raycaster.setFromCamera( pointer, camera );
         intersects = raycaster.intersectObjects( scene.children );
         let position = new THREE.Vector3(intersects[0].point.x, intersects[0].point.y, intersects[0].point.z);
-        confettiParticles.push(createConfetti(position));
+        confettiParticles.push(createConfetti(position,confetti));
         console.log(confettiParticles);
         if (confettiParticles.length > 30){
             confetti.remove(confetti.children[0]);
@@ -223,55 +223,7 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-function createConfetti(position) {
-    let particleGeometry = new THREE.BufferGeometry();
-    let colors = new Float32Array(100 * 3);
-    let particleCount = 100;
-    let positions = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount * 3; i += 3) {
-        let theta = Math.random() * Math.PI * 2;
-        let phi = Math.random() * Math.PI;
-        let radius = Math.random() * 2;
-
-        positions[i] = radius * Math.sin(phi) * Math.cos(theta) + position.x;
-        positions[i + 1] = radius * Math.cos(phi) + position.y;
-        positions[i + 2] = radius * Math.sin(phi) * Math.sin(theta) + position.z;
-
-        colors[i] = Math.random();
-        colors[i + 1] = Math.random();
-        colors[i + 2] = Math.random();
-    }
-
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    let particleMaterial = new THREE.PointsMaterial({
-        size: 0.3,
-        vertexColors: true
-    });
-
-    let particles = new THREE.Points(particleGeometry, particleMaterial);
-    confetti.add(particles);
-
-    return particles;
-}
 scene.add(confetti);
-
-
-function animateParticles(){
-    for (let i = 0; i < confettiParticles.length; i++) {
-        let particles = confettiParticles[i];
-        let positions = particles.geometry.attributes.position.array;
-
-        for (let j = 0; j < positions.length; j += 3) {
-            positions[j] += (Math.random() - 0.5) * 0.5;
-            positions[j + 1] += (Math.random() - 0.9) * 0.2;
-            positions[j + 2] += (Math.random() - 0.5) * 0.5;
-        }
-        particles.geometry.attributes.position.needsUpdate = true;
-    }
-}
 
 //** Animation Function to update controls and animations recursively */
 function animate() {
@@ -283,7 +235,7 @@ function animate() {
             collisionDetected("s");
         }
     }
-    animateParticles();
+    animateParticles(confettiParticles);
     controls.update(delta);
     requestAnimationFrame(animate);
     render();
