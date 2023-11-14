@@ -1,9 +1,8 @@
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import { FlyControls } from 'three/addons/controls/FlyControls.js';
 
-export function initControls(camera,renderer){
-    let controls;
-    function initFlyControls(camera,renderer) {
+export function initControls(camera,renderer, controls){
+        function initFlyControls(camera,renderer) {
         controls = new FlyControls(camera, renderer.domElement);
 
         controls.movementSpeed = 50;
@@ -100,6 +99,9 @@ export function initControls(camera,renderer){
     });
 
     document.addEventListener('keyup', (event) => {resetArrowButtons();});
+
+
+
 
     return initFlyControls(camera,renderer);
 }
