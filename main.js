@@ -16,7 +16,7 @@ const loader = new GLTFLoader();
 const renderer = new THREE.WebGLRenderer();
 const clock = new THREE.Clock();
 let ray = new THREE.Raycaster(undefined, undefined, 0, undefined)
-let timeAfterCollision = Date.now();
+let timeAfterCollision = Date.now()  + 1000;
 
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
@@ -66,6 +66,11 @@ function init() {
     1, -50, 0, Math.PI / 3, 0).then(r => {
             cargoship = r;
         });
+        
+    loadObject('./public/BOAT_anim.glb',scene,loader,3,3,3,150,
+        0,0,0,-Math.PI/2,0).then(r=>{
+        yanBoat=r;
+    });
 
 
     camera = initCamera(innerWidth, innerHeight);
@@ -247,7 +252,7 @@ function render() {
         1.2, 0);
     rotate(cargoship, time * 2 / 3, .9, 0, 150,
         1, -50);
-    rotate(yanBoat, -time * 3, 9.5, Math.PI, 50,
+    rotate(yanBoat, -time / 8, 9.5, Math.PI, 50,
         1.1, -100);
     water.material.uniforms['time'].value += 1.0 / 60.0;
     renderStats()
