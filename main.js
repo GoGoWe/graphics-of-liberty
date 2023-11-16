@@ -252,7 +252,7 @@ function render() {
         1.2, 0);
     rotate(cargoship, time * 2 / 3, .9, 0, 150,
         1, -50);
-    rotate(yanBoat, -time / 8, 9.5, Math.PI, 50,
+    rotate(yanBoat, time / 8, 9.5, Math.PI, 50,
         1.1, -100);
     water.material.uniforms['time'].value += 1.0 / 60.0;
     renderStats()
