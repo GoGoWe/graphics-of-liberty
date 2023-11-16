@@ -146,6 +146,7 @@ document.addEventListener("keydown", function (event) {
                 controls = initOrbitControls(camera, renderer, true, false);
             }
             controls.enabled = true;
+            controls.maxPolarAngle = Math.PI/2;
             controls.autoRotate = false;
             document.getElementById("status").textContent="Orbit";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
@@ -156,6 +157,7 @@ document.addEventListener("keydown", function (event) {
                 initOrbitControls(camera,renderer, false, true);
             }else {
                 controls.enabled = false;
+                controls.maxPolarAngle = Math.PI;
                 controls.autoRotate = !controls.autoRotate; // TODO: Should this rely be toggled i would remove this else completely
                 document.getElementById("status").textContent = controls.autoRotate ? "AutoP" : "Locked";
             }
@@ -170,6 +172,7 @@ document.addEventListener("keydown", function (event) {
                 controls = initOrbitControls(camera, renderer, false, false);
             }
             controls.enabled = false;
+            controls.maxPolarAngle = Math.PI;
             controls.autoRotate = false;
             document.getElementById("status").textContent="Locked";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
@@ -183,6 +186,7 @@ document.addEventListener("keydown", function (event) {
                 controls = initOrbitControls(camera, renderer, false, false);
             }
             controls.enabled = false;
+            controls.maxPolarAngle = Math.PI;
             controls.autoRotate = false;
             document.getElementById("status").textContent="Locked";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
@@ -196,6 +200,7 @@ document.addEventListener("keydown", function (event) {
                 controls = initOrbitControls(camera, renderer, false, false);
             }
             controls.enabled = false;
+            controls.maxPolarAngle = Math.PI;
             controls.autoRotate = false;
             document.getElementById("status").textContent="Locked";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";

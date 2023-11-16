@@ -10,8 +10,8 @@ export function rotate(obj, renderZaehler, radius, startausrichtung, startX,star
 
 export function createConfetti(position,confetti) {
     let particleGeometry = new THREE.BufferGeometry();
-    let colors = new Float32Array(100 * 3);
     let particleCount = 100;
+    let colors = new Float32Array(particleCount * 3);
     let positions = new Float32Array(particleCount * 3);
 
     for (let i = 0; i < particleCount * 3; i += 3) {
