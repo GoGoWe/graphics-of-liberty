@@ -57,7 +57,7 @@ function init() {
 
 
     loadObject('./public/sailingboat.glb', scene, loader, 1, 1, 1, -100,
-    1, 0, 0, -Math.PI / 2, 0).then(r => {
+    -1, 0, 0, -Math.PI / 2, 0).then(r => {
             sailboat = r;
             //sailboat.orientationY=Math.PI/2;
         });
@@ -254,10 +254,10 @@ function animate() {
 function render() {
     const time = performance.now();
     rotate(sailboat, -time, .4, Math.PI, -100,
-        1.2, 0);
+        0.6, 0);
     rotate(cargoship, time * 2 / 3, .9, 0, 150,
         1, -50);
-    rotate(yanBoat, -time / 8, 9.5, Math.PI, 50,
+    rotate(yanBoat, time / 8, 9.5, Math.PI, 50,
         1.1, -100);
     water.material.uniforms['time'].value += 1.0 / 60.0;
     renderStats()
