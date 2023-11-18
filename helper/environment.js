@@ -93,7 +93,7 @@ export function initEnvironment(scene,renderer,camera){
 
     // generate parametersetter
     const gui = new GUI();
-    gui.$title.textContent="Envirnoment Variables";
+    gui.$title.textContent="Environment Variables";
     const folderSky = gui.addFolder( 'Sky' );
 
 
