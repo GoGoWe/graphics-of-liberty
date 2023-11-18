@@ -16,7 +16,7 @@ export function startSound(camera,path, audioLoader,listener, playwithload){
     audioLoader.load( path, function( buffer ) {
         sound.setBuffer( buffer );
         sound.setLoop( true );
-        sound.setVolume( 0.5 );
+        sound.setVolume( 1 );
         if(playwithload) sound.play();
     });
     return sound;

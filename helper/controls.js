@@ -87,7 +87,6 @@ export function initControls(camera,renderer, controls){
     }
 
     document.addEventListener('keydown', (event) => {
-        console.log(event.key)
         switch (event.key) {
             case 'ArrowUp':
                 resetArrowButtons();
@@ -148,7 +147,6 @@ export function initControls(camera,renderer, controls){
                 break;
             case 'w' :
             case 'W' :
-                console.log("W")
                 resetLetterButtons();
                 WButton.classList.add('active');
                 break;

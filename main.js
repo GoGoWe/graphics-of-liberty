@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {loadObject} from "./helper/loader";
-import {createStats, initStats, renderStats} from "./helper/stats"
 import {animateParticles, createConfetti, rotate} from "./helper/animator";
 import {initEnvironment} from "./helper/environment";
 import {initCamera} from "./helper/camera";
@@ -223,7 +222,6 @@ document.addEventListener('keydown', function(event) {
         intersects = raycaster.intersectObjects( scene.children );
         let position = new THREE.Vector3(intersects[0].point.x, intersects[0].point.y, intersects[0].point.z);
         confettiParticles.push(createConfetti(position,confetti));
-        console.log(confettiParticles);
         if (confettiParticles.length > 30){
             confetti.remove(confetti.children[0]);
             confettiParticles.shift();
