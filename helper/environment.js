@@ -3,7 +3,6 @@ import GUI from "lil-gui";
 import {Sky} from "three/addons/objects/Sky";
 import {initWater} from "./water";
 import {initSound, startSound} from "./sound";
-import {cos, lights, sin} from "three/nodes";
 
 
 function addSpotlight(scene,originx,originy,originz,targetx,targety,targetz, intensity, color=0xeed760,fov=30){
@@ -57,7 +56,6 @@ export function initEnvironment(scene,renderer,camera){
     function updateSun() {
         const phi = THREE.MathUtils.degToRad( 90 - parameters.elevation );
         const theta = THREE.MathUtils.degToRad( parameters.azimuth );
-        console.log(sky.material.uniforms[ 'sunPosition' ].value)
         sun.setFromSphericalCoords( 1, phi, theta );
         sky.material.uniforms[ 'sunPosition' ].value.copy( sun );
         water.material.uniforms[ 'sunDirection' ].value.copy( sun );
@@ -69,7 +67,6 @@ export function initEnvironment(scene,renderer,camera){
         sunspotlight.position.y=1000*Math.cos(phi);
         sunspotlight.position.x=1000*Math.sin(theta);
         sunspotlight.position.z=1000*Math.cos(theta);
-        console.log(sunspotlight.position)
         sunspotlight.updateMatrix()
         var togglebtn = $(".toggle-btn");
         if (!togglebtn.hasClass("active")) {
@@ -77,7 +74,6 @@ export function initEnvironment(scene,renderer,camera){
             let g=0xe9-(1-Math.cos(phi))*0xc0;
             let b=0xcb-(1-Math.cos(phi))*0xc0;
 
-            console.log("rgb",r,g,b )
             sunspotlight.color.set(r,g,b);
         }
     }
@@ -92,16 +88,7 @@ export function initEnvironment(scene,renderer,camera){
         updateSun()
     }
 
-    class ColorGUIHelper {
 
-        get value() {
-            return `#${this.object[this.prop].getHexString()}`;
-        }
-
-        set value(hexString) {
-            this.object[this.prop].set(hexString);
-        }
-    }
 
 
     // generate parametersetter
@@ -144,7 +131,36 @@ export function initEnvironment(scene,renderer,camera){
     sunspotlight.shadow.bias=-0.000001
 
 
-
+    //Sunset
+    document.addEventListener('keydown', (event) => {
+        if(event.key==='7' ) {
+            console.log("Sweet Tunes")
+            document.getElementById("status").textContent="Sweet";
+            spotlight1.intensity=5000;
+            spotlight2.intensity=5000;
+            spotlight3.intensity=5000;
+            parameters.elevation=1.5;
+            parameters.azimuth=157;
+            parameters.exposure=0.25;
+            parameters.rayleigh=2.6;
+            parameters.mieDirectionalG=1;
+            skyParamChanged();
+            updateSun();
+            aliciaKeys.offset=68;
+            aliciaKeys.setVolume(0.3);
+            aliciaKeys.play();
+        }
+    });
+    document.addEventListener('keyup', (event) => {
+        if(event.key==='7' ) {
+            const togglebtn = $(".toggle-btn");
+            if (togglebtn.hasClass("active")) {
+                setNight();
+            }else {
+                setDay();
+            }
+        }
+    });
 
 
     //sound
@@ -153,42 +169,50 @@ export function initEnvironment(scene,renderer,camera){
     aliciaKeys.pause();
     let doves=startSound(camera,'public/sounds/seagulls.mp3',audioloader,listener,true);
 
+    function setDay(){
+        spotlight1.intensity=0;
+        spotlight2.intensity=0;
+        spotlight3.intensity=0;
+        sunspotlight.intensity=200000;
+        sunspotlight.color.set(0xf4,0xe9,0x9b);
+        parameters.elevation= 21;
+        parameters.azimuth= -130;
+        parameters.exposure= 0.3;
+        parameters.rayleigh= 0.5;
+        parameters.mieDirectionalG= .975;
+        doves.setVolume(1)
+        aliciaKeys.stop()
+        console.log("day");
+        skyParamChanged();
+        updateSun();
+    }
+
+    function setNight(){
+        spotlight1.intensity=10000;
+        spotlight2.intensity=10000;
+        spotlight3.intensity=10000;
+        sunspotlight.intensity=5000;
+        sunspotlight.color.set(0xbb,0xbb,0xff);
+        parameters.azimuth= -178.4;
+        parameters.elevation= 8;
+        parameters.exposure= 0.35;
+        parameters.rayleigh= 0.1;
+        parameters.mieDirectionalG= 1;
+        aliciaKeys.stop()
+        doves.setVolume(.6);
+        console.log("night");
+        skyParamChanged();
+        updateSun();
+    }
+
     $(document).ready(function () {
-        //console.log("par2",par)
         var togglebtn = $(".toggle-btn");
-        $(".switch").on("click", function (callback) {
+        $(".switch").on("click", function () {
             togglebtn.toggleClass("active");
             if (togglebtn.hasClass("active")) {
-                spotlight1.intensity=10000;
-                spotlight2.intensity=10000;
-                spotlight3.intensity=10000;
-                sunspotlight.intensity=5000;
-                sunspotlight.color.set(0xbb,0xbb,0xff);
-                parameters.azimuth= -178.4;
-                parameters.elevation= 8;
-                parameters.exposure= 0.35;
-                parameters.rayleigh= 0.1;
-                parameters.mieDirectionalG= 1;
-                doves.setVolume(0.5);
-                aliciaKeys.offset=68;
-                aliciaKeys.setVolume(0.1);
-                aliciaKeys.play();
-                console.log("night");
-
+                setNight();
             } else {
-                spotlight1.intensity=0;
-                spotlight2.intensity=0;
-                spotlight3.intensity=0;
-                sunspotlight.intensity=200000;
-                sunspotlight.color.set(0xf4,0xe9,0x9b);
-                parameters.elevation= 21;
-                parameters.azimuth= -130;
-                parameters.exposure= 0.3;
-                parameters.rayleigh= 0.5;
-                parameters.mieDirectionalG= .975;
-                doves.setVolume(0.5)
-                aliciaKeys.stop()
-                console.log("day");
+                setDay();
             }
             const uniforms = sky.material.uniforms;
             renderer.toneMappingExposure = parameters.exposure;
