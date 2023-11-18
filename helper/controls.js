@@ -1,4 +1,3 @@
-import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import { FlyControls } from 'three/addons/controls/FlyControls.js';
 
 export function initControls(camera,renderer, controls){
@@ -88,6 +87,7 @@ export function initControls(camera,renderer, controls){
     }
 
     document.addEventListener('keydown', (event) => {
+        console.log(event.key)
         switch (event.key) {
             case 'ArrowUp':
                 resetArrowButtons();
@@ -141,35 +141,43 @@ export function initControls(camera,renderer, controls){
                 sixButton.textContent="P4";
                 sixButton.classList.add('active');
                 break;
+            case 'q' :
             case 'Q' :
                 resetLetterButtons();
                 QButton.classList.add('active');
                 break;
+            case 'w' :
             case 'W' :
                 console.log("W")
                 resetLetterButtons();
                 WButton.classList.add('active');
                 break;
+            case 'e' :
             case 'E' :
                 resetLetterButtons();
                 EButton.classList.add('active');
                 break;
+            case 'r' :
             case 'R' :
                 resetLetterButtons();
                 RButton.classList.add('active');
                 break;
+            case 'a' :
             case 'A' :
                 resetLetterButtons();
                 AButton.classList.add('active');
                 break;
+            case 's' :
             case 'S' :
                 resetLetterButtons();
                 SButton.classList.add('active');
                 break;
+            case 'd' :
             case 'D' :
                 resetLetterButtons();
                 DButton.classList.add('active');
                 break;
+            case 'f' :
             case 'F' :
                 resetLetterButtons();
                 FButton.classList.add('active');
@@ -177,7 +185,7 @@ export function initControls(camera,renderer, controls){
         }
     });
 
-    document.addEventListener('keyup', (event) => {resetArrowButtons();resetLetterButtons()});
+    document.addEventListener('keyup', () => {resetArrowButtons();resetLetterButtons()});
 
 
 
