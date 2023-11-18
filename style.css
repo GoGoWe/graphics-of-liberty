@@ -98,7 +98,7 @@ body{
 .controlsCollapsible{
     position: absolute;
     left: 88%;
-    top: 40%;
+    top: 20%;
     width:12%;
     height:10%;
     display: flow;
@@ -109,16 +109,16 @@ body{
     background: rgba(255, 255, 255, 0.0);
 }
 
-.arrow-button {
-    width: 40px;
-    height: 40px;
+.button {
+    display: inline-block;
+    width: 30%;
     font-size: 20px;
     background-color: #ccc;
     border: 1px solid #999;
-    margin: 5px;
+    margin: 3px;
 }
 
-.arrow-button.active {
+.button.active {
     background-color: white;
 }
 

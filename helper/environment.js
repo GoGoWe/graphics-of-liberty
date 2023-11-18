@@ -106,6 +106,7 @@ export function initEnvironment(scene,renderer,camera){
 
     // generate parametersetter
     const gui = new GUI();
+    gui.$title.textContent="Envirnoment Variables";
     const folderSky = gui.addFolder( 'Sky' );
 
 
@@ -125,8 +126,7 @@ export function initEnvironment(scene,renderer,camera){
     waterUniforms.size.value=5;
     folderWater.add( waterUniforms.size, 'value', 5, 30, 0.1 ).name( 'size' );
     folderWater.open();
-
-
+    gui.close();
     //spotlight
 
     // white spotlight shining from the side, modulated by a texture, casting a shadow
