@@ -62,10 +62,13 @@ function init() {
             //sailboat.orientationY=Math.PI/2;
         });
 
-    loadObject('./public/BOAT_anim.glb', scene, loader, 1, 1, 1, 150,
-    1, -50, 0, Math.PI / 3, 0).then(r => {
-            cargoship = r;
-        });
+    loadObject('./public/BOAT_anim.glb', scene, loader,
+        1, 1, 1,
+        150, 1, -50,
+        0, Math.PI / 3, 0)
+            .then(r => {
+                cargoship = r;
+            });
         
     loadObject('./public/BOAT_anim.glb',scene,loader,3,3,3,150,
         0,0,0,-Math.PI/2,0).then(r=>{
@@ -261,7 +264,6 @@ function render() {
     water.material.uniforms['time'].value += 1.0 / 60.0;
     renderStats()
     renderer.render(scene, camera);
-
 }
 
 init();
