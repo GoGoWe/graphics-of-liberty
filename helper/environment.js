@@ -133,24 +133,26 @@ export function initEnvironment(scene,renderer,camera){
 
     //Sunset
     document.addEventListener('keydown', (event) => {
-        if(event.key==='7' ) {
-            console.log("Sweet Tunes")
-            document.getElementById("status").textContent="Sweet";
-            spotlight1.intensity=5000;
-            spotlight2.intensity=5000;
-            spotlight3.intensity=5000;
-            parameters.elevation=1.5;
-            parameters.azimuth=157;
-            parameters.exposure=0.25;
-            parameters.rayleigh=2.6;
-            parameters.mieDirectionalG=1;
-            skyParamChanged();
-            updateSun();
-            frankSinatra.stop();
-            doves.setVolume(.3);
-            aliciaKeys.offset=68;
-            aliciaKeys.setVolume(0.3);
-            aliciaKeys.play();
+        if(document.getElementById("status").textContent!=="Sweet"){
+            if(event.key==='7' ) {
+                console.log("Sweet Tunes")
+                document.getElementById("status").textContent="Sweet";
+                spotlight1.intensity=5000;
+                spotlight2.intensity=5000;
+                spotlight3.intensity=5000;
+                parameters.elevation=1.5;
+                parameters.azimuth=157;
+                parameters.exposure=0.25;
+                parameters.rayleigh=2.6;
+                parameters.mieDirectionalG=1;
+                skyParamChanged();
+                updateSun();
+                frankSinatra.stop();
+                doves.setVolume(.3);
+                aliciaKeys.offset=68;
+                aliciaKeys.setVolume(0.3);
+                aliciaKeys.play();
+            }
         }
     });
     document.addEventListener('keyup', (event) => {
@@ -198,6 +200,7 @@ export function initEnvironment(scene,renderer,camera){
         frankSinatra.stop();
         aliciaKeys.stop();
         console.log("day");
+        document.getElementById("status").textContent="Day";
         skyParamChanged();
         updateSun();
     }
@@ -217,6 +220,7 @@ export function initEnvironment(scene,renderer,camera){
         frankSinatra.stop();
         doves.setVolume(.6);
         console.log("night");
+        document.getElementById("status").textContent="Night";
         skyParamChanged();
         updateSun();
         frankSinatra.offset=42.5;
