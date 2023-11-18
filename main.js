@@ -57,7 +57,7 @@ function init() {
 
 
     loadObject('./public/sailingboat.glb', scene, loader, 1, 1, 1, -100,
-    1, 0, 0, -Math.PI / 2, 0).then(r => {
+    -1, 0, 0, -Math.PI / 2, 0).then(r => {
             sailboat = r;
             //sailboat.orientationY=Math.PI/2;
         });
@@ -146,6 +146,7 @@ document.addEventListener("keydown", function (event) {
                 controls = initOrbitControls(camera, renderer, true, false);
             }
             controls.enabled = true;
+            controls.maxPolarAngle = Math.PI/2;
             controls.autoRotate = false;
             document.getElementById("status").textContent="Orbit";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
@@ -156,6 +157,7 @@ document.addEventListener("keydown", function (event) {
                 initOrbitControls(camera,renderer, false, true);
             }else {
                 controls.enabled = false;
+                controls.maxPolarAngle = Math.PI;
                 controls.autoRotate = !controls.autoRotate; // TODO: Should this rely be toggled i would remove this else completely
                 document.getElementById("status").textContent = controls.autoRotate ? "AutoP" : "Locked";
             }
@@ -170,6 +172,7 @@ document.addEventListener("keydown", function (event) {
                 controls = initOrbitControls(camera, renderer, false, false);
             }
             controls.enabled = false;
+            controls.maxPolarAngle = Math.PI;
             controls.autoRotate = false;
             document.getElementById("status").textContent="Locked";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
@@ -183,6 +186,7 @@ document.addEventListener("keydown", function (event) {
                 controls = initOrbitControls(camera, renderer, false, false);
             }
             controls.enabled = false;
+            controls.maxPolarAngle = Math.PI;
             controls.autoRotate = false;
             document.getElementById("status").textContent="Locked";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
@@ -196,6 +200,7 @@ document.addEventListener("keydown", function (event) {
                 controls = initOrbitControls(camera, renderer, false, false);
             }
             controls.enabled = false;
+            controls.maxPolarAngle = Math.PI;
             controls.autoRotate = false;
             document.getElementById("status").textContent="Locked";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
@@ -249,7 +254,7 @@ function animate() {
 function render() {
     const time = performance.now();
     rotate(sailboat, -time, .4, Math.PI, -100,
-        1.2, 0);
+        0.6, 0);
     rotate(cargoship, time * 2 / 3, .9, 0, 150,
         1, -50);
     rotate(yanBoat, time / 8, 9.5, Math.PI, 50,
