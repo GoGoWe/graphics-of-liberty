@@ -7,6 +7,7 @@ import {initCamera} from "./helper/camera";
 import {initControls} from "./helper/controls";
 import {OrbitControls} from "three/addons/controls/OrbitControls";
 import {FlyControls} from 'three/addons/controls/FlyControls.js';
+import {initStats, renderStats} from "./helper/stats";
 
 
 //** Global constants and variables */
