@@ -146,6 +146,8 @@ export function initEnvironment(scene,renderer,camera){
             parameters.mieDirectionalG=1;
             skyParamChanged();
             updateSun();
+            frankSinatra.stop();
+            doves.setVolume(.3);
             aliciaKeys.offset=68;
             aliciaKeys.setVolume(0.3);
             aliciaKeys.play();
@@ -165,7 +167,19 @@ export function initEnvironment(scene,renderer,camera){
 
     //sound
     let [audioloader,listener]=initSound(camera);
-    let aliciaKeys=startSound(camera,'public/Sounds/Empire State of Mind (Part II) Broken Down.mp3',audioloader, listener ,false);
+    let aliciaKeys=startSound(camera,
+        'public/Sounds/Empire State of Mind (Part II) Broken Down.mp3',
+        audioloader,
+        listener ,
+        false);
+
+    let frankSinatra=startSound(camera,
+        'public/Sounds/New York New York 2008 Remastered.mp3',
+        audioloader,
+        listener ,
+        false);
+
+
     aliciaKeys.pause();
     let doves=startSound(camera,'public/sounds/seagulls.mp3',audioloader,listener,true);
 
@@ -180,8 +194,9 @@ export function initEnvironment(scene,renderer,camera){
         parameters.exposure= 0.3;
         parameters.rayleigh= 0.5;
         parameters.mieDirectionalG= .975;
-        doves.setVolume(1)
-        aliciaKeys.stop()
+        doves.setVolume(1);
+        frankSinatra.stop();
+        aliciaKeys.stop();
         console.log("day");
         skyParamChanged();
         updateSun();
@@ -198,11 +213,15 @@ export function initEnvironment(scene,renderer,camera){
         parameters.exposure= 0.35;
         parameters.rayleigh= 0.1;
         parameters.mieDirectionalG= 1;
-        aliciaKeys.stop()
+        aliciaKeys.stop();
+        frankSinatra.stop();
         doves.setVolume(.6);
         console.log("night");
         skyParamChanged();
         updateSun();
+        frankSinatra.offset=42.5;
+        frankSinatra.setVolume(0.3);
+        frankSinatra.play();
     }
 
     $(document).ready(function () {
@@ -211,6 +230,7 @@ export function initEnvironment(scene,renderer,camera){
             togglebtn.toggleClass("active");
             if (togglebtn.hasClass("active")) {
                 setNight();
+
             } else {
                 setDay();
             }
