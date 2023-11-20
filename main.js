@@ -42,7 +42,15 @@ window.requestAnimationFrame(render);
 //** Initialize the scene */
 function init() {
 
-    loadObject('./public/statue_of_liberty.glb', scene, loader, [1, 1, 1], new THREE.Vector3, [0, -Math.PI / 2, 0]).then(r => {
+    var nullVec = new THREE.Vector3()
+    var origScale = new THREE.Vector3(1,1,1);
+    var x3Scale = new THREE.Vector3(3,3,3);
+    var origRot = new THREE.Quaternion(0, -Math.PI / 2, 0)
+    var posSail = new THREE.Vector3(-100, -1, 0);
+    var posCargo = new THREE.Vector3(150, 1, -50);
+    var posBigCargo = new THREE.Vector3(150,0,0)
+
+    loadObject('./public/statue_of_liberty.glb', scene, loader, origScale, nullVec, origRot).then(r => {
         statue = r;
         statue.traverse((object) => {
             if (object.isMesh) {
@@ -53,15 +61,15 @@ function init() {
         });
     });
 
-    loadObject('./public/sailingboat.glb', scene, loader, [1, 1, 1], new THREE.Vector3(-100, -1, 0), [0, -Math.PI / 2, 0]).then(r => {
+    loadObject('./public/sailingboat.glb', scene, loader, origScale, posSail, origRot).then(r => {
             sailboat = r;
     });
 
-    loadObject('./public/BOAT_anim.glb', scene, loader, [1, 1, 1], new THREE.Vector3(150, 1, -50), [0, Math.PI / 3, 0]).then(r => {
+    loadObject('./public/BOAT_anim.glb', scene, loader, origScale, posCargo,origRot).then(r => {
                 cargoship = r;
     });
         
-    loadObject('./public/BOAT_anim.glb',scene,loader,[3,3,3],new THREE.Vector3(150,0,0),[0,-Math.PI/2,0]).then(r=>{
+    loadObject('./public/BOAT_anim.glb',scene,loader, x3Scale, posBigCargo, origRot).then(r=>{
         yanBoat=r;
     });
 
