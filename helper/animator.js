@@ -1,14 +1,31 @@
 import * as THREE from "three";
 
-export function rotate(obj, renderZaehler, radius, startausrichtung, startX,startY, startZ){
-    if(obj===null)return;
-    obj.rotation.y = renderZaehler/1000+startausrichtung;
-    obj.position.y=startY;
-    obj.position.x = startX+Math.sin(renderZaehler/1000+startausrichtung)*radius*25;
-    obj.position.z = startZ+Math.sin(renderZaehler/1000+Math.PI/2+startausrichtung)*radius*20
+/**
+ * Initiate a rotate animation for the given object on a giver radius 
+ * @param {THREE.Object3D} obj - The 3D object in the scene that should be rotated 
+ * @param {int} ticker - The render ticker to update the animation each frame
+ * @param {int} radius - The radius the object should be rotated on
+ * @param {int} startPosition - The start position of the object
+ * @param {float} startX - The x position of the object
+ * @param {float} startY - The y position of the object
+ * @param {float} startZ - The z position of the object
+ * @returns 
+ */
+export function rotate(obj, ticker, radius, startPosition, startX, startY, startZ){
+    if (obj === null) return;
+    obj.rotation.y = ticker/1000+startPosition;
+    obj.position.y = startY;
+    obj.position.x = startX+Math.sin(ticker/1000+startPosition)*radius*25;
+    obj.position.z = startZ+Math.sin(ticker/1000+Math.PI/2+startPosition)*radius*20
 }
 
-export function createConfetti(position,confetti) {
+/**
+ * Adds a confetti to a object groups and animates them
+ * @param {THREE.Vector3} position - The position where the confetti should spawn and fall
+ * @param {THREE.Group} objectGroup - The group where the confetti should be added to
+ * @returns 
+ */
+export function createConfetti(position,objectGroup) {
     let particleGeometry = new THREE.BufferGeometry();
     let particleCount = 100;
     let colors = new Float32Array(particleCount * 3);
@@ -37,13 +54,15 @@ export function createConfetti(position,confetti) {
     });
 
     let particles = new THREE.Points(particleGeometry, particleMaterial);
-    confetti.add(particles);
+    objectGroup.add(particles);
 
     return particles;
 }
 
-
-
+/**
+ * A particle animation, moving each particle of a group randomly downwards
+ * @param {*} confettiParticles 
+ */
 export function animateParticles(confettiParticles){
     for (let i = 0; i < confettiParticles.length; i++) {
         let particles = confettiParticles[i];
