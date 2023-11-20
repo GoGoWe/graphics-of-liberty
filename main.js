@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
-import {loadObject} from "./helper/loader";
-import {animateParticles, createConfetti, rotate} from "./helper/animator";
-import {initEnvironment} from "./helper/environment";
-import {initCamera} from "./helper/camera";
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { loadObject } from "./helper/loader";
+import { animateParticles, createConfetti, rotate } from "./helper/animator";
+import { initEnvironment } from "./helper/environment";
+import { initCamera } from "./helper/camera";
 import { initOrbitControls, initFlyControls, initUIControls } from "./helper/controls";
-import {OrbitControls} from "three/addons/controls/OrbitControls";
-import {FlyControls} from 'three/addons/controls/FlyControls.js';
-import {initStats, renderStats} from "./helper/stats";
+import { OrbitControls } from "three/addons/controls/OrbitControls";
+import { FlyControls } from 'three/addons/controls/FlyControls.js';
+import { initStats, renderStats } from "./helper/stats";
 
 
 //** Global constants and variables */
@@ -21,10 +21,10 @@ const confettiRay = new THREE.Raycaster(undefined, undefined, 0, undefined)
 const collisionRay = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
-let timeAfterCollision = Date.now()  + 1000;
+let timeAfterCollision = Date.now() + 1000;
 let intersects;
 let water, camera, controls;
-let statue = null,    sailboat = null,    cargoship = null,    yanBoat=null;
+let statue = null, sailboat = null, cargoship = null, yanBoat = null;
 
 //** Configure renderer */
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -35,7 +35,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFShadowMap;
 document.body.appendChild(renderer.domElement);
 
-window.addEventListener( 'pointermove', onPointerMove );
+window.addEventListener('pointermove', onPointerMove);
 
 window.requestAnimationFrame(render);
 
@@ -43,12 +43,12 @@ window.requestAnimationFrame(render);
 function init() {
 
     var nullVec = new THREE.Vector3()
-    var origScale = new THREE.Vector3(1,1,1);
-    var x3Scale = new THREE.Vector3(3,3,3);
+    var origScale = new THREE.Vector3(1, 1, 1);
+    var x3Scale = new THREE.Vector3(3, 3, 3);
     var origRot = new THREE.Quaternion(0, -Math.PI / 2, 0)
     var posSail = new THREE.Vector3(-100, -1, 0);
     var posCargo = new THREE.Vector3(150, 1, -50);
-    var posBigCargo = new THREE.Vector3(150,0,0)
+    var posBigCargo = new THREE.Vector3(150, 0, 0)
 
     loadObject('./public/statue_of_liberty.glb', scene, loader, origScale, nullVec, origRot).then(r => {
         statue = r;
@@ -56,21 +56,21 @@ function init() {
             if (object.isMesh) {
                 object.castShadow = true;
                 object.receiveShadow = true;
-                object.selfShadow=true;
+                object.selfShadow = true;
             }
         });
     });
 
     loadObject('./public/sailingboat.glb', scene, loader, origScale, posSail, origRot).then(r => {
-            sailboat = r;
+        sailboat = r;
     });
 
-    loadObject('./public/BOAT_anim.glb', scene, loader, origScale, posCargo,origRot).then(r => {
-                cargoship = r;
+    loadObject('./public/BOAT_anim.glb', scene, loader, origScale, posCargo, origRot).then(r => {
+        cargoship = r;
     });
-        
-    loadObject('./public/BOAT_anim.glb',scene,loader, x3Scale, posBigCargo, origRot).then(r=>{
-        yanBoat=r;
+
+    loadObject('./public/BOAT_anim.glb', scene, loader, x3Scale, posBigCargo, origRot).then(r => {
+        yanBoat = r;
     });
 
     camera = initCamera(innerWidth, innerHeight);
@@ -99,8 +99,8 @@ document.addEventListener("keydown", function (event) {
                 controls.dispose();
                 controls = initFlyControls(camera, renderer);
             }
-            document.getElementById("status").textContent="Flight";
-            document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
+            document.getElementById("status").textContent = "Flight";
+            document.getElementById("mainTitle").style.color = "rgba(1,1,1,0)";
             break;
         case "2":
             if (controls instanceof FlyControls) {
@@ -108,22 +108,22 @@ document.addEventListener("keydown", function (event) {
                 controls = initOrbitControls(camera, renderer, true, false);
             }
             controls.enabled = true;
-            controls.maxPolarAngle = Math.PI/2;
+            controls.maxPolarAngle = Math.PI / 2;
             controls.autoRotate = false;
-            document.getElementById("status").textContent="Orbit";
-            document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
+            document.getElementById("status").textContent = "Orbit";
+            document.getElementById("mainTitle").style.color = "rgba(1,1,1,0)";
             break;
         case "3":
             if (controls instanceof FlyControls) {
                 controls.dispose();
-                initOrbitControls(camera,renderer, false, true);
-            }else {
+                initOrbitControls(camera, renderer, false, true);
+            } else {
                 controls.enabled = false;
                 controls.maxPolarAngle = Math.PI;
                 controls.autoRotate = !controls.autoRotate; // TODO: Should this rely be toggled i would remove this else completely
                 document.getElementById("status").textContent = controls.autoRotate ? "AutoP" : "Locked";
             }
-            document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
+            document.getElementById("mainTitle").style.color = "rgba(1,1,1,1)";
 
             camera.position.set(0, 80, 200);
             controls.target.set(0, 40, 0);
@@ -136,8 +136,8 @@ document.addEventListener("keydown", function (event) {
             controls.enabled = false;
             controls.maxPolarAngle = Math.PI;
             controls.autoRotate = false;
-            document.getElementById("status").textContent="Locked";
-            document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
+            document.getElementById("status").textContent = "Locked";
+            document.getElementById("mainTitle").style.color = "rgba(1,1,1,1)";
 
             camera.position.set(-20, 5, -170);
             controls.target.set(0, 40, 0);
@@ -150,8 +150,8 @@ document.addEventListener("keydown", function (event) {
             controls.enabled = false;
             controls.maxPolarAngle = Math.PI;
             controls.autoRotate = false;
-            document.getElementById("status").textContent="Locked";
-            document.getElementById("mainTitle").style.color="rgba(1,1,1,1)";
+            document.getElementById("status").textContent = "Locked";
+            document.getElementById("mainTitle").style.color = "rgba(1,1,1,1)";
 
             camera.position.set(-117, 8, -100);
             controls.target.set(0, 25, -143);
@@ -164,8 +164,8 @@ document.addEventListener("keydown", function (event) {
             controls.enabled = false;
             controls.maxPolarAngle = Math.PI;
             controls.autoRotate = false;
-            document.getElementById("status").textContent="Locked";
-            document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
+            document.getElementById("status").textContent = "Locked";
+            document.getElementById("mainTitle").style.color = "rgba(1,1,1,0)";
 
             camera.position.set(-10, 15, 30);
             controls.target.set(0, 55, 0);
@@ -174,18 +174,18 @@ document.addEventListener("keydown", function (event) {
 
 });
 
-function onPointerMove( event ) {
-    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+function onPointerMove(event) {
+    pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+    pointer.y = - (event.clientY / window.innerHeight) * 2 + 1;
 }
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function (event) {
     if (event.code === 'Space') {
-        collisionRay.setFromCamera( pointer, camera );
-        intersects = collisionRay.intersectObjects( scene.children );
+        collisionRay.setFromCamera(pointer, camera);
+        intersects = collisionRay.intersectObjects(scene.children);
         let position = new THREE.Vector3(intersects[0].point.x, intersects[0].point.y, intersects[0].point.z);
-        confettiParticles.push(createConfetti(position,confetti));
-        if (confettiParticles.length > 30){
+        confettiParticles.push(createConfetti(position, confetti));
+        if (confettiParticles.length > 30) {
             confetti.remove(confetti.children[0]);
             confettiParticles.shift();
         }
@@ -201,7 +201,7 @@ function collisionDetected(freeCollisionKey) {
     let speedTemp = controls.movementSpeed;
     controls.movementSpeed = 0;
     console.log("Press " + freeCollisionKey + " to free the camera");
-    document.getElementById("status").textContent="Tap S";
+    document.getElementById("status").textContent = "Tap S";
 
     // Wait for keypress before enabling controls again
     document.addEventListener("keydown", function freeCollision(event) {
@@ -210,7 +210,7 @@ function collisionDetected(freeCollisionKey) {
             console.log(speedTemp)
             controls.movementSpeed = 50;
             document.removeEventListener("keydown", freeCollision);
-            document.getElementById("status").textContent="Flight";
+            document.getElementById("status").textContent = "Flight";
         }
     });
 

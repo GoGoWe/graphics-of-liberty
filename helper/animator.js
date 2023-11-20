@@ -11,12 +11,12 @@ import * as THREE from "three";
  * @param {float} startZ - The z position of the object
  * @returns 
  */
-export function rotate(obj, ticker, radius, startPosition, startX, startY, startZ){
+export function rotate(obj, ticker, radius, startPosition, startX, startY, startZ) {
     if (obj === null) return;
-    obj.rotation.y = ticker/1000+startPosition;
+    obj.rotation.y = ticker / 1000 + startPosition;
     obj.position.y = startY;
-    obj.position.x = startX+Math.sin(ticker/1000+startPosition)*radius*25;
-    obj.position.z = startZ+Math.sin(ticker/1000+Math.PI/2+startPosition)*radius*20
+    obj.position.x = startX + Math.sin(ticker / 1000 + startPosition) * radius * 25;
+    obj.position.z = startZ + Math.sin(ticker / 1000 + Math.PI / 2 + startPosition) * radius * 20
 }
 
 /**
@@ -25,7 +25,7 @@ export function rotate(obj, ticker, radius, startPosition, startX, startY, start
  * @param {THREE.Group} objectGroup - The group where the confetti should be added to
  * @returns 
  */
-export function createConfetti(position,objectGroup) {
+export function createConfetti(position, objectGroup) {
     let particleGeometry = new THREE.BufferGeometry();
     let particleCount = 100;
     let colors = new Float32Array(particleCount * 3);
@@ -63,7 +63,7 @@ export function createConfetti(position,objectGroup) {
  * A particle animation, moving each particle of a group randomly downwards
  * @param {*} confettiParticles 
  */
-export function animateParticles(confettiParticles){
+export function animateParticles(confettiParticles) {
     for (let i = 0; i < confettiParticles.length; i++) {
         let particles = confettiParticles[i];
         let positions = particles.geometry.attributes.position.array;

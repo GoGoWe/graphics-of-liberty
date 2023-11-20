@@ -11,7 +11,7 @@ export function initStats() {
     stats.domElement.style.left = '0';
     stats.domElement.style.top = '0';
 
-    document.body.appendChild( stats.domElement );
+    document.body.appendChild(stats.domElement);
 
     // call the render function
     renderStats();

@@ -1,18 +1,18 @@
 import { FlyControls } from 'three/addons/controls/FlyControls.js';
-import {OrbitControls} from "three/addons/controls/OrbitControls";
+import { OrbitControls } from "three/addons/controls/OrbitControls";
 
 /** Initialize responsive controls panel */
-export function initUIControls(){
+export function initUIControls() {
 
     // Open controls 
     let coll = document.getElementsByClassName("collapsible");
     let i;
 
     for (i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function() {
+        coll[i].addEventListener("click", function () {
             this.classList.toggle("active");
             let content = this.nextElementSibling;
-            if (content.style.maxHeight){
+            if (content.style.maxHeight) {
                 content.style.maxHeight = null;
             } else {
                 content.style.maxHeight = content.scrollHeight + "px";
@@ -57,12 +57,12 @@ export function initUIControls(){
         fourButton.classList.remove('active');
         fiveButton.classList.remove('active');
         sixButton.classList.remove('active');
-        oneButton.textContent="1";
-        twoButton.textContent="2";
-        threeButton.textContent="3";
-        fourButton.textContent="4";
-        fiveButton.textContent="5";
-        sixButton.textContent="6";
+        oneButton.textContent = "1";
+        twoButton.textContent = "2";
+        threeButton.textContent = "3";
+        fourButton.textContent = "4";
+        fiveButton.textContent = "5";
+        sixButton.textContent = "6";
     }
 
     function resetLetterButtons() {
@@ -95,86 +95,86 @@ export function initUIControls(){
                 resetArrowButtons();
                 leftButton.classList.add('active');
                 break;
-            case '1' :
+            case '1':
                 resetNumberButtons();
                 resetArrowButtons();
-                oneButton.textContent="Fly";
+                oneButton.textContent = "Fly";
                 oneButton.classList.add('active');
                 break;
-            case '2' :
+            case '2':
                 resetNumberButtons();
                 resetArrowButtons();
-                twoButton.textContent="Orb";
+                twoButton.textContent = "Orb";
                 twoButton.classList.add('active');
                 break;
-            case '3' :
+            case '3':
                 resetNumberButtons();
                 resetArrowButtons();
-                threeButton.textContent="P1";
+                threeButton.textContent = "P1";
                 threeButton.classList.add('active');
                 break;
-            case '4' :
+            case '4':
                 resetNumberButtons();
                 resetArrowButtons();
-                fourButton.textContent="P2";
+                fourButton.textContent = "P2";
                 fourButton.classList.add('active');
                 break;
-            case '5' :
+            case '5':
                 resetNumberButtons();
                 resetArrowButtons();
-                fiveButton.textContent="P3";
+                fiveButton.textContent = "P3";
                 fiveButton.classList.add('active');
                 break;
-            case '6' :
+            case '6':
                 resetNumberButtons();
                 resetArrowButtons();
-                sixButton.textContent="P4";
+                sixButton.textContent = "P4";
                 sixButton.classList.add('active');
                 break;
-            case 'q' :
-            case 'Q' :
+            case 'q':
+            case 'Q':
                 resetLetterButtons();
                 QButton.classList.add('active');
                 break;
-            case 'w' :
-            case 'W' :
+            case 'w':
+            case 'W':
                 resetLetterButtons();
                 WButton.classList.add('active');
                 break;
-            case 'e' :
-            case 'E' :
+            case 'e':
+            case 'E':
                 resetLetterButtons();
                 EButton.classList.add('active');
                 break;
-            case 'r' :
-            case 'R' :
+            case 'r':
+            case 'R':
                 resetLetterButtons();
                 RButton.classList.add('active');
                 break;
-            case 'a' :
-            case 'A' :
+            case 'a':
+            case 'A':
                 resetLetterButtons();
                 AButton.classList.add('active');
                 break;
-            case 's' :
-            case 'S' :
+            case 's':
+            case 'S':
                 resetLetterButtons();
                 SButton.classList.add('active');
                 break;
-            case 'd' :
-            case 'D' :
+            case 'd':
+            case 'D':
                 resetLetterButtons();
                 DButton.classList.add('active');
                 break;
-            case 'f' :
-            case 'F' :
+            case 'f':
+            case 'F':
                 resetLetterButtons();
                 FButton.classList.add('active');
                 break;
         }
     });
 
-    document.addEventListener('keyup', () => {resetArrowButtons();resetLetterButtons()});
+    document.addEventListener('keyup', () => { resetArrowButtons(); resetLetterButtons() });
 }
 
 /** Initialize controls for free flying trough the scene 
@@ -200,14 +200,14 @@ export function initFlyControls(camera, renderer) {
 */
 export function initOrbitControls(camera, renderer, userControlOn, autoRotateOn) {
     let controls = new OrbitControls(camera, renderer.domElement);
-    
+
     controls.target.set(0, 40, 0);
     controls.listenToKeyEvents(window);
     controls.enableDamping = false;
     controls.dampingFactor = 0.05;
     controls.screenSpacePanning = false;
     controls.autoRotate = autoRotateOn;
-    controls.maxPolarAngle = Math.PI/2;
+    controls.maxPolarAngle = Math.PI / 2;
     controls.keys = {
         LEFT: 'ArrowLeft',
         UP: 'ArrowUp',
