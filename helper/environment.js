@@ -2,7 +2,7 @@ import * as THREE from "three";
 import GUI from "lil-gui";
 import {Sky} from "three/addons/objects/Sky";
 import {initWater} from "./water";
-import {initSound, startSound} from "./sound";
+import {startSound} from "./sound";
 
 
 function addSpotlight(scene,originx,originy,originz,targetx,targety,targetz, intensity, color=0xeed760,fov=30){
@@ -135,7 +135,6 @@ export function initEnvironment(scene,renderer,camera){
     document.addEventListener('keydown', (event) => {
         if(document.getElementById("status").textContent!=="Sweet"){
             if(event.key==='7' ) {
-                console.log("Sweet Tunes")
                 document.getElementById("status").textContent="Sweet";
                 spotlight1.intensity=5000;
                 spotlight2.intensity=5000;
@@ -155,6 +154,7 @@ export function initEnvironment(scene,renderer,camera){
             }
         }
     });
+
     document.addEventListener('keyup', (event) => {
         if(event.key==='7' ) {
             const togglebtn = $(".toggle-btn");
@@ -166,24 +166,17 @@ export function initEnvironment(scene,renderer,camera){
         }
     });
 
-
     //sound
-    let [audioloader,listener]=initSound(camera);
     let aliciaKeys=startSound(camera,
         'public/Sounds/Empire State of Mind (Part II) Broken Down.mp3',
-        audioloader,
-        listener ,
         false);
 
     let frankSinatra=startSound(camera,
         'public/Sounds/New York New York 2008 Remastered.mp3',
-        audioloader,
-        listener ,
         false);
 
-
     aliciaKeys.pause();
-    let doves=startSound(camera,'public/sounds/seagulls.mp3',audioloader,listener,true);
+    let doves=startSound(camera,'public/sounds/seagulls.mp3',true);
 
     function setDay(){
         spotlight1.intensity=0;

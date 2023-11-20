@@ -1,19 +1,11 @@
 import { FlyControls } from 'three/addons/controls/FlyControls.js';
+import {OrbitControls} from "three/addons/controls/OrbitControls";
 
-export function initControls(camera,renderer, controls){
-        function initFlyControls(camera,renderer) {
-        controls = new FlyControls(camera, renderer.domElement);
+/** Initialize responsive controls panel */
+export function initUIControls(){
 
-        controls.movementSpeed = 50;
-        controls.domElement = renderer.domElement;
-        controls.rollSpeed = Math.PI / 12;
-        controls.autoForward = false;
-        controls.dragToLook = true;
-        return controls;
-    }
-//set controls
-
-   let coll = document.getElementsByClassName("collapsible");
+    // Open controls 
+    let coll = document.getElementsByClassName("collapsible");
     let i;
 
     for (i = 0; i < coll.length; i++) {
@@ -28,8 +20,8 @@ export function initControls(camera,renderer, controls){
         });
     }
 
-
-// Get references to the arrow buttons and the action button
+    // TODO: Make an array out of this
+    // Get references to the arrow buttons and the action button
     const upButton = document.getElementById('up');
     const downButton = document.getElementById('down');
     const rightButton = document.getElementById('right');
@@ -49,9 +41,7 @@ export function initControls(camera,renderer, controls){
     const DButton = document.getElementById('D');
     const FButton = document.getElementById('F');
 
-
-
-// Function to reset the arrow buttons to their default state
+    /** Function to reset the arrow buttons to their default state */
     function resetArrowButtons() {
         upButton.classList.remove('active');
         downButton.classList.remove('active');
@@ -59,7 +49,7 @@ export function initControls(camera,renderer, controls){
         leftButton.classList.remove('active');
     }
 
-    // Function to reset the number buttons to their default state
+    /** Function to reset the number buttons to their default state */
     function resetNumberButtons() {
         oneButton.classList.remove('active');
         twoButton.classList.remove('active');
@@ -74,6 +64,7 @@ export function initControls(camera,renderer, controls){
         fiveButton.textContent="5";
         sixButton.textContent="6";
     }
+
     function resetLetterButtons() {
         QButton.classList.remove('active');
         WButton.classList.remove('active');
@@ -113,7 +104,7 @@ export function initControls(camera,renderer, controls){
             case '2' :
                 resetNumberButtons();
                 resetArrowButtons();
-                twoButton.textContent="orb";
+                twoButton.textContent="Orb";
                 twoButton.classList.add('active');
                 break;
             case '3' :
@@ -184,9 +175,45 @@ export function initControls(camera,renderer, controls){
     });
 
     document.addEventListener('keyup', () => {resetArrowButtons();resetLetterButtons()});
+}
 
+/** Initialize controls for free flying trough the scene 
+ *  @param {THREE.Camera} camera - The camera the controls should be added to
+ *  @param {THREE.WebGLRender} renderer - The renderer that should be used as target domElement
+*/
+export function initFlyControls(camera, renderer) {
+    let controls = new FlyControls(camera, renderer.domElement);
 
+    controls.movementSpeed = 50;
+    controls.domElement = renderer.domElement;
+    controls.rollSpeed = Math.PI / 12;
+    controls.autoForward = false;
+    controls.dragToLook = true;
+    return controls;
+}
 
-
-    return initFlyControls(camera,renderer);
+/** Initialize controls to orbit around a specific focus point 
+ *  @param {THREE.Camera} camera - The camera the controls should be added to
+ *  @param {THREE.WebGLRender} renderer - The renderer that should be used as target domElement
+ *  @param {Boolean} userControlOn - Should the camera be controllable by the user?
+ *  @param {Boolean} autoRotateOn - Should the camera rotate by its own?
+*/
+export function initOrbitControls(camera, renderer, userControlOn, autoRotateOn) {
+    let controls = new OrbitControls(camera, renderer.domElement);
+    
+    controls.target.set(0, 40, 0);
+    controls.listenToKeyEvents(window);
+    controls.enableDamping = false;
+    controls.dampingFactor = 0.05;
+    controls.screenSpacePanning = false;
+    controls.autoRotate = autoRotateOn;
+    controls.maxPolarAngle = Math.PI/2;
+    controls.keys = {
+        LEFT: 'ArrowLeft',
+        UP: 'ArrowUp',
+        RIGHT: 'ArrowRight',
+        BOTTOM: 'ArrowDown'
+    }
+    controls.enabled = userControlOn;
+    return controls;
 }

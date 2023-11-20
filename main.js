@@ -4,7 +4,7 @@ import {loadObject} from "./helper/loader";
 import {animateParticles, createConfetti, rotate} from "./helper/animator";
 import {initEnvironment} from "./helper/environment";
 import {initCamera} from "./helper/camera";
-import {initControls} from "./helper/controls";
+import { initOrbitControls, initFlyControls, initUIControls } from "./helper/controls";
 import {OrbitControls} from "three/addons/controls/OrbitControls";
 import {FlyControls} from 'three/addons/controls/FlyControls.js';
 import {initStats, renderStats} from "./helper/stats";
@@ -15,15 +15,14 @@ const scene = new THREE.Scene();
 const loader = new GLTFLoader();
 const renderer = new THREE.WebGLRenderer();
 const clock = new THREE.Clock();
-let ray = new THREE.Raycaster(undefined, undefined, 0, undefined)
-let timeAfterCollision = Date.now()  + 1000;
-
-const raycaster = new THREE.Raycaster();
+const confettiParticles = [];
+const confetti = new THREE.Group();
+const confettiRay = new THREE.Raycaster(undefined, undefined, 0, undefined)
+const collisionRay = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
-let intersects;
-let confetti = new THREE.Group();
-let confettiParticles = [];
 
+let timeAfterCollision = Date.now()  + 1000;
+let intersects;
 let water, camera, controls;
 let statue = null,    sailboat = null,    cargoship = null,    yanBoat=null;
 
@@ -43,8 +42,7 @@ window.requestAnimationFrame(render);
 //** Initialize the scene */
 function init() {
 
-    loadObject('./public/statue_of_liberty.glb', scene, loader, 1, 1, 1, 0,
-        0, 0, 0, -Math.PI / 2, 0).then(r => {
+    loadObject('./public/statue_of_liberty.glb', scene, loader, [1, 1, 1], new THREE.Vector3, [0, -Math.PI / 2, 0]).then(r => {
         statue = r;
         statue.traverse((object) => {
             if (object.isMesh) {
@@ -55,33 +53,26 @@ function init() {
         });
     });
 
-
-    loadObject('./public/sailingboat.glb', scene, loader, 1, 1, 1, -100,
-    -1, 0, 0, -Math.PI / 2, 0).then(r => {
+    loadObject('./public/sailingboat.glb', scene, loader, [1, 1, 1], new THREE.Vector3(-100, -1, 0), [0, -Math.PI / 2, 0]).then(r => {
             sailboat = r;
-            //sailboat.orientationY=Math.PI/2;
-        });
+    });
 
-    loadObject('./public/BOAT_anim.glb', scene, loader,
-        1, 1, 1,
-        150, 1, -50,
-        0, Math.PI / 3, 0)
-            .then(r => {
+    loadObject('./public/BOAT_anim.glb', scene, loader, [1, 1, 1], new THREE.Vector3(150, 1, -50), [0, Math.PI / 3, 0]).then(r => {
                 cargoship = r;
-            });
+    });
         
-    loadObject('./public/BOAT_anim.glb',scene,loader,3,3,3,150,
-        0,0,0,-Math.PI/2,0).then(r=>{
+    loadObject('./public/BOAT_anim.glb',scene,loader,[3,3,3],new THREE.Vector3(150,0,0),[0,-Math.PI/2,0]).then(r=>{
         yanBoat=r;
     });
 
-
     camera = initCamera(innerWidth, innerHeight);
     water = initEnvironment(scene, renderer, camera);
-    controls = initControls(camera, renderer,controls);
+    controls = initFlyControls(camera, renderer);
 
     // Create statistics to show information like FPS, latency, ect.s
     initStats();
+    // Initialize UI control elements
+    initUIControls();
 
     // Update rendering on window resize
     window.addEventListener('resize', function () {
@@ -92,59 +83,19 @@ function init() {
 
 }
 
-
-function collisionDetected(freeCollisionKey) {
-    controls.enabled = false;
-    controls.dispose();
-    console.log("Press " + freeCollisionKey + " to free the camera");
-    document.getElementById("status").textContent="Tap S";
-
-    // Wait for keypress s before enabling controls again
-    document.addEventListener("keydown", function freeCollision(event) {
-        if (event.key === freeCollisionKey) {
-            timeAfterCollision = Date.now();
-            controls = initControls(camera, renderer, controls);
-            controls.enabled = true;
-            document.removeEventListener("keydown", freeCollision);
-            document.getElementById("status").textContent="Flight";
-        }
-    });
-
-}
-
-function initOrbitControls(camera, renderer, movement, autoRotate) {
-    controls = new OrbitControls(camera, renderer.domElement);
-    controls.target.set(0, 40, 0);
-    controls.listenToKeyEvents(window);
-    controls.enableDamping = false;
-    controls.dampingFactor = 0.05;
-    controls.screenSpacePanning = false;
-    controls.autoRotate = autoRotate;
-    controls.maxPolarAngle= Math.PI/2;
-    controls.keys = {
-        LEFT: 'ArrowLeft', //left arrow
-        UP: 'ArrowUp', // up arrow
-        RIGHT: 'ArrowRight', // right arrow
-        BOTTOM: 'ArrowDown' // down arrow
-    }
-    controls.enabled = movement;
-    controls.update()
-    return controls;
-}
-
 //** Event listener for keydown events to change camera position*/
 document.addEventListener("keydown", function (event) {
     switch (event.key) {
         case "1":
             if (controls instanceof OrbitControls) {
                 controls.dispose();
-                controls = initControls(camera, renderer);
+                controls = initFlyControls(camera, renderer);
             }
             document.getElementById("status").textContent="Flight";
             document.getElementById("mainTitle").style.color="rgba(1,1,1,0)";
             break;
         case "2":
-            if(controls instanceof FlyControls) {
+            if (controls instanceof FlyControls) {
                 controls.dispose();
                 controls = initOrbitControls(camera, renderer, true, false);
             }
@@ -222,8 +173,8 @@ function onPointerMove( event ) {
 
 document.addEventListener('keydown', function(event) {
     if (event.code === 'Space') {
-        raycaster.setFromCamera( pointer, camera );
-        intersects = raycaster.intersectObjects( scene.children );
+        collisionRay.setFromCamera( pointer, camera );
+        intersects = collisionRay.intersectObjects( scene.children );
         let position = new THREE.Vector3(intersects[0].point.x, intersects[0].point.y, intersects[0].point.z);
         confettiParticles.push(createConfetti(position,confetti));
         if (confettiParticles.length > 30){
@@ -235,12 +186,34 @@ document.addEventListener('keydown', function(event) {
 
 scene.add(confetti);
 
+/** Should be invoked when a collision is detected 
+  * @param {string} freeCollisionKey - The key that need to be pressed to enable controls again   
+  */
+function collisionDetected(freeCollisionKey) {
+    let speedTemp = controls.movementSpeed;
+    controls.movementSpeed = 0;
+    console.log("Press " + freeCollisionKey + " to free the camera");
+    document.getElementById("status").textContent="Tap S";
+
+    // Wait for keypress before enabling controls again
+    document.addEventListener("keydown", function freeCollision(event) {
+        if (event.key === freeCollisionKey) {
+            timeAfterCollision = Date.now();
+            console.log(speedTemp)
+            controls.movementSpeed = 50;
+            document.removeEventListener("keydown", freeCollision);
+            document.getElementById("status").textContent="Flight";
+        }
+    });
+
+}
+
 //** Animation Function to update controls and animations recursively */
 function animate() {
     const delta = clock.getDelta();
     if (controls instanceof FlyControls) {
-        ray.setFromCamera(new THREE.Vector3(0, 0, 0), camera);
-        var collisionResults = ray.intersectObjects(scene.children, true);
+        confettiRay.setFromCamera(new THREE.Vector3(0, 0, 0), camera);
+        var collisionResults = confettiRay.intersectObjects(scene.children, true);
         if (collisionResults.length > 0 && collisionResults[0].distance < 10 && Date.now() - timeAfterCollision > 50) {
             collisionDetected("s");
         }
@@ -252,7 +225,6 @@ function animate() {
 }
 
 //** Rendering Function invoked by the animation*/
-
 function render() {
     const time = performance.now();
     rotate(sailboat, -time, .4, Math.PI, -100,
@@ -266,5 +238,7 @@ function render() {
     renderer.render(scene, camera);
 }
 
+
+// Application Entry Point
 init();
 animate();
